@@ -22,38 +22,34 @@ class ProductController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $product = new Product;
+{
+    $product = new Product;
 
-        $product->name = $request->name;
-        $product->price = $request->price;
-        $product->description = $request->description;
-        $product->brand_id = $request->brand_id;
-        $product->category_id = $request->category_id;
+    $product->name = $request->name;
+    $product->price = $request->price;
+    $product->description = $request->description;
+    $product->brand_id = $request->brand_id;
+    $product->category_id = $request->category_id;
 
+    $product->save();
 
-        $product->save();
+    if ($request->hasFile('product_images')) {
+        $productImages = $request->file('product_images');
+        foreach ($productImages as $image) {
+            $uniqueName = time() . '-' . Str::random(10) . '.' . $image->getClientOriginalExtension();
+            $image->move(storage_path('app/public/product_images'), $uniqueName);
 
-        //comprueba si el producto tiene imágenes subidas
-
-        if ($request->hasFile('product_images')) {
-            $productImage = $request->file('product_images');
-            foreach ($productImage as $image) {
-                //genera un nombre único para la imágen usando timestamps y strings randoms
-                $uniqueName = time() .  '-' . Str::random(10) . '-' . $image->getClientOriginalExtension();
-                //Alamcena la iamgen en la carpeta publiccon el nombre único
-                $image->move(storage_path('app/public/product_images'), $uniqueName);
-
-                //Crea una nueva imagen del producto con el product_id y el uniqueName
-                ProductImage::create([
-                    'product_id' => $product->id,
-                    'image' => 'product_images/' . $uniqueName,
-                ]);
-            }
+            ProductImage::create([
+                'product_id' => $product->id,
+                'image' => 'product_images/' . $uniqueName,
+            ]);
         }
-
-        return redirect()->route('admin.products.index')->with('success', 'Producto creado con exito');
     }
+
+    return redirect()->route('admin.products.index')->with('success', 'Producto creado con éxito');
+}
+
+
 
     public function update(Request $request, $id)
     {

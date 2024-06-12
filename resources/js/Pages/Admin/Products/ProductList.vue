@@ -266,7 +266,7 @@ const resetFilters = () => {
     <section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
         <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
             <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
-                
+
                 <div
                     class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
                     <div class="w-full md:w-1/2">
@@ -313,19 +313,27 @@ const resetFilters = () => {
                                 type="button">
                                 <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
                                     class="h-4 w-4 mr-2 text-gray-400" viewbox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd" />
+                                    <path fill-rule="evenodd"
+                                        d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
+                                        clip-rule="evenodd" />
                                 </svg>
                                 Marcas
-                                <svg class="-mr-1 ml-1.5 w-5 h-5" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                    <path clip-rule="evenodd" fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                                <svg class="-mr-1 ml-1.5 w-5 h-5" fill="currentColor" viewbox="0 0 20 20"
+                                    xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                    <path clip-rule="evenodd" fill-rule="evenodd"
+                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
                                 </svg>
                             </button>
-                            <div id="filterBrandDropdown" class="z-10 hidden w-48 p-3 bg-white rounded-lg shadow dark:bg-gray-700">
+                            <div id="filterBrandDropdown"
+                                class="z-10 hidden w-48 p-3 bg-white rounded-lg shadow dark:bg-gray-700">
                                 <ul class="space-y-2 text-sm" aria-labelledby="filterBrandDropdownButton">
                                     <li v-for="brand in brands" :key="brand.id" class="flex items-center">
-                                        <input :id="'brand-' + brand.id" type="checkbox" :value="brand.id" v-model="selectedBrands"
+                                        <input :id="'brand-' + brand.id" type="checkbox" :value="brand.id"
+                                            v-model="selectedBrands"
                                             class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                                        <label :for="'brand-' + brand.id" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">{{ brand.name }}</label>
+                                        <label :for="'brand-' + brand.id"
+                                            class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">{{
+                                            brand.name }}</label>
                                     </li>
                                 </ul>
                             </div>
@@ -336,19 +344,27 @@ const resetFilters = () => {
                                 type="button">
                                 <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
                                     class="h-4 w-4 mr-2 text-gray-400" viewbox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd" />
+                                    <path fill-rule="evenodd"
+                                        d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
+                                        clip-rule="evenodd" />
                                 </svg>
                                 Categorías
-                                <svg class="-mr-1 ml-1.5 w-5 h-5" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                    <path clip-rule="evenodd" fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                                <svg class="-mr-1 ml-1.5 w-5 h-5" fill="currentColor" viewbox="0 0 20 20"
+                                    xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                    <path clip-rule="evenodd" fill-rule="evenodd"
+                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
                                 </svg>
                             </button>
-                            <div id="filterCategoryDropdown" class="z-10 hidden w-48 p-3 bg-white rounded-lg shadow dark:bg-gray-700">
+                            <div id="filterCategoryDropdown"
+                                class="z-10 hidden w-48 p-3 bg-white rounded-lg shadow dark:bg-gray-700">
                                 <ul class="space-y-2 text-sm" aria-labelledby="filterCategoryDropdownButton">
                                     <li v-for="category in categories" :key="category.id" class="flex items-center">
-                                        <input :id="'category-' + category.id" type="checkbox" :value="category.id" v-model="selectedCategories"
+                                        <input :id="'category-' + category.id" type="checkbox" :value="category.id"
+                                            v-model="selectedCategories"
                                             class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                                        <label :for="'category-' + category.id" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">{{ category.name }}</label>
+                                        <label :for="'category-' + category.id"
+                                            class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">{{
+                                            category.name }}</label>
                                     </li>
                                 </ul>
                             </div>
@@ -373,16 +389,16 @@ const resetFilters = () => {
                             <tr v-for="product in filteredData" :key="product.id" class="border-b dark:border-gray-700">
                                 <th scope="row"
                                     class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white inline-flex">
-                                    
+
                                     <img v-if="product.product_images.length > 0"
-                                        :src="`/${product.product_images[0].image}`" :alt="product.imageAlt"
+                                        :src="`/storage/${product.product_images[0].image}`" :alt="product.imageAlt"
                                         class="h-12 w-12 object-cover object-center" />
-                                        
+
                                     <img v-else
                                         src="https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg"
                                         :alt="product.imageAlt" class="h-12 w-12 object-cover object-center" />
 
-                                        <a class="flex ml-3 items-center">{{product.name }}</a>
+                                    <a class="flex ml-3 items-center">{{ product.name }}</a>
                                 </th>
                                 <td class="px-4 py-3">
 
@@ -416,7 +432,8 @@ const resetFilters = () => {
                                             aria-labelledby="dropdown-button">
                                             <li>
                                                 <Link :href="route('admin.productDetail.index', product.id)"
-                                                    class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Show
+                                                    class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                                Show
                                                 </Link>
                                             </li>
                                             <li>
@@ -477,7 +494,7 @@ const resetFilters = () => {
 
                     </select>
                 </div>
-        
+
                 <div class="sm:col-span-2">
                     <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                         Description</label>
