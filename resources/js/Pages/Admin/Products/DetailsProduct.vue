@@ -18,6 +18,8 @@ const props = defineProps({
     },
 });
 
+const product = ref(props.stockProduct)
+
 const id = ref('');
 const product_id = ref('');
 const flavour_id = ref('');
@@ -331,7 +333,7 @@ const resetFilters = () => {
                                     </div>
                                 </div>
                                 <div class="overflow-x-auto">
-                                    <table v-if="filteredProducts.length > 0"
+                                    <table v-if="product.length > 0"
                                         class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                                         <thead
                                             class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
