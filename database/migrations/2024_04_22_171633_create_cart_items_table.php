@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('cart_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(User::class,'user_id');
+            $table->foreignIdFor(User::class, 'user_id');
             $table->foreignId('product_id')->references('product_id')->on('stock_products');
             $table->foreignId('weight_id')->references('weight_id')->on('stock_products')->nullable();
             $table->foreignId('flavour_id')->references('flavour_id')->on('stock_products')->nullable();
@@ -22,6 +22,7 @@ return new class extends Migration
             $table->foreignId('promotion_id')->references('id')->on('promotions')->nullable();
             $table->timestamps();
         });
+        
     }
 
     /**
