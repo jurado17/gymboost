@@ -22,7 +22,7 @@ class ProductsTableSeeder extends Seeder
                 'created_by' => $faker->optional()->numberBetween(1, 10),
                 'updated_by' => $faker->optional()->numberBetween(1, 10),
                 'brand_id' => $faker->numberBetween(1, 10),
-                'category_id' => $faker->numberBetween(1, 10),
+                'category_id' => $faker->numberBetween(1, 6),
                 'deleted_by' => $faker->optional()->numberBetween(1, 10),
                 'created_at' => now(),
                 'updated_at' => now(),

@@ -42,7 +42,8 @@ class ProductController extends Controller
                 //genera un nombre único para la imágen usando timestamps y strings randoms
                 $uniqueName = time() .  '-' . Str::random(10) . '-' . $image->getClientOriginalExtension();
                 //Alamcena la iamgen en la carpeta publiccon el nombre único
-                $image->move('product_images', $uniqueName);
+                $image->move(public_path('product_images'), $uniqueName);
+
                 //Crea una nueva imagen del producto con el product_id y el uniqueName
                 ProductImage::create([
                     'product_id' => $product->id,
