@@ -135,7 +135,7 @@ const addToCart = (product, weight, flavour, quantity, price) => {
                             <div
                                 class="aspect-h-1 aspect-w-1 w-full overflow-hidden lg:aspect-none group-hover:opacity-75 lg:h-72">
                                 <img v-if="product.product_images.length > 0"
-                                    :src="`/${product.product_images[0].image}`" :alt="product.imageAlt"
+                                :src="`/storage/${product.product_images[0].image}`"  :alt="product.imageAlt"
                                     class=" object-cover object-center h-60 w-auto" />
 
                                 <img v-else
