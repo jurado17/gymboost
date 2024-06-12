@@ -1,7 +1,6 @@
 <?php
 
 namespace Database\Seeders;
-
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Faker\Factory as Faker;
@@ -11,6 +10,7 @@ class ProductsTableSeeder extends Seeder
     public function run()
     {
         $faker = Faker::create();
+        $promotionIds = DB::table('promotions')->pluck('id')->toArray();
 
         foreach(range(1, 10) as $index) {
             DB::table('products')->insert([
@@ -18,7 +18,7 @@ class ProductsTableSeeder extends Seeder
                 'slug' => $faker->slug,
                 'description' => $faker->sentence,
                 'price' => $faker->randomFloat(2, 1, 100),
-                'promotion_id' => $faker->optional()->numberBetween(1, 10), // ID de una promoción de la tabla promotions
+                'promotion_id' => $faker->optional()->randomElement($promotionIds), // ID de una promoción existente o null
                 'created_by' => $faker->optional()->numberBetween(1, 10),
                 'updated_by' => $faker->optional()->numberBetween(1, 10),
                 'brand_id' => $faker->numberBetween(1, 10),
@@ -30,3 +30,4 @@ class ProductsTableSeeder extends Seeder
         }
     }
 }
+

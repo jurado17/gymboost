@@ -16,20 +16,21 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('products', function (Blueprint $table) {
-            $table->id();
-            $table->string('name',200);
-            $table->string('slug',200);
-            $table->string('description',200);
-            $table->decimal('price',10,2);
-            $table->foreignId('promotion_id')->references('id')->on('promotions')->nullable();
-            $table->foreignIdFor(User::class,'created_by')->nullable();
-            $table->foreignIdFor(User::class, 'updated_by')->nullable();
-            $table->foreignIdFor(Brand::class,'brand_id')->nullable();
-            $table->foreignIdFor(Category::class,'category_id')->nullable();
-            $table->softDeletes();
-            $table->foreignIdFor(User::class,'deleted_by')->nullable();
-            $table->timestamps();
-        });
+    $table->id();
+    $table->string('name', 200);
+    $table->string('slug', 200);
+    $table->string('description', 200);
+    $table->decimal('price', 10, 2);
+    $table->foreignId('promotion_id')->nullable()->constrained('promotions');
+    $table->foreignIdFor(User::class, 'created_by')->nullable();
+    $table->foreignIdFor(User::class, 'updated_by')->nullable();
+    $table->foreignIdFor(Brand::class, 'brand_id')->nullable();
+    $table->foreignIdFor(Category::class, 'category_id')->nullable();
+    $table->softDeletes();
+    $table->foreignIdFor(User::class, 'deleted_by')->nullable();
+    $table->timestamps();
+});
+
     }
 
     /**
