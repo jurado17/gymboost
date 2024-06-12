@@ -18,11 +18,12 @@ class ProductsTableSeeder extends Seeder
                 'slug' => $faker->slug,
                 'description' => $faker->sentence,
                 'price' => $faker->randomFloat(2, 1, 100),
+                'promotion_id' => $faker->optional()->numberBetween(1, 10), // ID de una promoción de la tabla promotions
                 'created_by' => $faker->optional()->numberBetween(1, 10),
                 'updated_by' => $faker->optional()->numberBetween(1, 10),
                 'brand_id' => $faker->numberBetween(1, 10),
                 'category_id' => $faker->numberBetween(1, 10),
-                'deleted_by' => $faker->numberBetween(1, 10),
+                'deleted_by' => $faker->optional()->numberBetween(1, 10),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

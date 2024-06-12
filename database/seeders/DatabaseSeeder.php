@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             CategoriesTableSeeder::class,
             BrandsTableSeeder::class,
             ProductsTableSeeder::class,
+            PromotionTableSeeder::class,
             OrdersTableSeeder::class,
             StockProductsTableSeeder::class,
             OrderItemsTableSeeder::class,
