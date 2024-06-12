@@ -11,29 +11,36 @@ class UserAddressesTableSeeder extends Seeder
     public function run()
     {
         $faker = Faker::create();
-        
+
         // Obtener todos los ids de usuarios existentes
-        $userIds = DB::table('users')->pluck('id');
+        $userIds = DB::table('users')->pluck('id')->all();
 
         // Verifica que haya usuarios en la tabla 'users'
-        if ($userIds->isEmpty()) {
+        if (empty($userIds)) {
             $this->command->info('No users found, skipping user_addresses seeding.');
             return;
         }
 
-        foreach ($userIds as $userId) {
-            DB::table('user_addresses')->insert([
-                'type' => $faker->word,
-                'address1' => $faker->address,
-                'city' => $faker->city,
-                'province' => $faker->state,
-                'zip_code' => $faker->postcode,
-                'isMain' => $faker->boolean,
-                'country_code' => $faker->countryCode,
-                'user_id' => $userId,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+        foreach (range(1, 10) as $index) {
+            // Obtener un user_id aleatorio válido
+            $userId = $faker->randomElement($userIds);
+
+            try {
+                DB::table('user_addresses')->insert([
+                    'type' => $faker->word,
+                    'address1' => $faker->address,
+                    'city' => $faker->city,
+                    'province' => $faker->state,
+                    'zip_code' => $faker->postcode,
+                    'isMain' => $faker->boolean,
+                    'country_code' => $faker->countryCode,
+                    'user_id' => $userId,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            } catch (\Exception $e) {
+                $this->command->error("Error inserting user address for user_id $userId: " . $e->getMessage());
+            }
         }
     }
 }
