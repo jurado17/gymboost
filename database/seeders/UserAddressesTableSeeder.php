@@ -27,7 +27,7 @@ class UserAddressesTableSeeder extends Seeder
 
             try {
                 DB::table('user_addresses')->insert([
-                    'type' => $faker->word,
+                    'type' => 'Domicilio',
                     'address1' => $faker->address,
                     'city' => $faker->city,
                     'province' => $faker->state,
