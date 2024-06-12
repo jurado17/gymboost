@@ -2,7 +2,7 @@
 import AdminLayout from '../Components/AdminLayout.vue';
 import { ref } from 'vue';
 import { router } from '@inertiajs/vue3';
-import {  computed, watch } from 'vue';
+import { computed, watch } from 'vue';
 const props = defineProps({
     stockProduct: {
         type: Array,
@@ -168,7 +168,7 @@ const filteredProducts = computed(() => {
     return props.stockProduct.filter(product => {
         const matchesFlavour = selectedFlavours.value.length === 0 || selectedFlavours.value.includes(product.flavour_id);
         const matchesWeight = selectedWeights.value.length === 0 || selectedWeights.value.includes(product.weight_id);
-        
+
         return matchesFlavour && matchesWeight;
     });
 });
@@ -331,7 +331,8 @@ const resetFilters = () => {
                                     </div>
                                 </div>
                                 <div class="overflow-x-auto">
-                                    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                                    <table v-if="filteredProducts.length > 0"
+                                        class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                                         <thead
                                             class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                             <tr>
@@ -386,9 +387,13 @@ const resetFilters = () => {
                                                 <td
                                                     class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
 
-                                                    <span  v-if="product.isStocked" class="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">En stock</span>
+                                                    <span v-if="product.isStocked"
+                                                        class="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">En
+                                                        stock</span>
 
-                                                    <span v-else class="bg-red-100 text-red-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300" >Sin Stock</span>
+                                                    <span v-else
+                                                        class="bg-red-100 text-red-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">Sin
+                                                        Stock</span>
                                                 </td>
                                                 <td
                                                     class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
@@ -439,6 +444,11 @@ const resetFilters = () => {
 
                                         </tbody>
                                     </table>
+
+                                    <div v-else
+                                        class="flex items-center justify-center h-24 text-gray-500 dark:text-gray-400">
+                                        No hay productos disponibles.
+                                    </div>
                                 </div>
                                 <nav class="flex flex-col items-start justify-between p-4 space-y-3 md:flex-row md:items-center md:space-y-0"
                                     aria-label="Table navigation">
@@ -481,7 +491,7 @@ const resetFilters = () => {
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                         <option v-for="weight in weights" :key="weight.id" :value="weight.id">{{
                                             weight.name
-                                        }}</option>
+                                            }}</option>
                                     </select>
                                 </div>
 
@@ -492,7 +502,7 @@ const resetFilters = () => {
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                         <option v-for="flavour in flavours" :key="flavour.id" :value="flavour.id">{{
                                             flavour.name
-                                        }}</option>
+                                            }}</option>
                                     </select>
                                 </div>
 
