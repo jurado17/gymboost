@@ -18,7 +18,7 @@ class UsersTableSeeder extends Seeder
                 'name' => $faker->name,
                 'last_name' => $faker->lastName,
                 'email' => $faker->unique()->email,
-                'tel' => $faker->phoneNumber,
+                'tel' => $faker->numerify('#########'),
                 'birth_date' => $faker->optional()->date,
                 'email_verified_at' => $faker->optional()->dateTime,
                 'password' => Hash::make('password'),
