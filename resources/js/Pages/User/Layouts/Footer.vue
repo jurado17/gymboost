@@ -8,10 +8,10 @@
                         <h2 class="mb-6 text-sm font-semibold  uppercase dark:text-white">Resources</h2>
                         <ul class=" dark:">
                             <li class="mb-4">
-                                <a href="https://flowbite.com" class="hover:underline">Flowbite</a>
+                                <a href="#" class="hover:underline">Flowbite</a>
                             </li>
                             <li>
-                                <a href="https://tailwindcss.com/" class="hover:underline">Tailwind CSS</a>
+                                <a href="#" class="hover:underline">Tailwind CSS</a>
                             </li>
                         </ul>
                     </div>
@@ -19,10 +19,10 @@
                         <h2 class="mb-6 text-sm font-semibold  uppercase dark:text-white">Follow us</h2>
                         <ul class=" dark:">
                             <li class="mb-4">
-                                <a href="https://github.com/themesberg/flowbite" class="hover:underline ">Github</a>
+                                <a href="#" class="hover:underline ">Github</a>
                             </li>
                             <li>
-                                <a href="https://discord.gg/4eeurUVvTy" class="hover:underline">Discord</a>
+                                <a href="#" class="hover:underline">Discord</a>
                             </li>
                         </ul>
                     </div>
