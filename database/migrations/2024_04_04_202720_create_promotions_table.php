@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('type');
             $table->string('name',255);
-            $table->longText('descrition');
+            $table->longText('description');
             $table->string('discount_code');
             $table->decimal('porcentual_discount',10,2);
             $table->date('active_until')->nullable();
