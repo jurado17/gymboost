@@ -17,6 +17,7 @@ class CartItem extends Model
         'quantity',
         'final_price',
         'reserved_until',
+        'promotion_id'
     ];
 
     public function user()

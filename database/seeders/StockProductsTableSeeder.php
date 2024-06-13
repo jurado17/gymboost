@@ -12,10 +12,10 @@ class StockProductsTableSeeder extends Seeder
     {
         $faker = Faker::create();
 
-        foreach(range(1, 30) as $index) {
+        foreach(range(1, 0) as $index) {
             DB::table('stock_products')->insert([
                 'product_id' => $faker->numberBetween(1, 10),
-                'weight_id' => $faker->numberBetween(1, 10),
+                'weight_id' => $faker->numberBetween(1, 6),
                 'flavour_id' => $faker->numberBetween(1, 10),
                 'quantity' => $faker->numberBetween(1, 100),
                 'isSotcked' => $faker->boolean,

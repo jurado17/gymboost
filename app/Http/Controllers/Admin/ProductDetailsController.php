@@ -15,7 +15,7 @@ class ProductDetailsController extends Controller
 {
     public function index($id)
     {   
-        $product = Product::where('id',$id)->first();
+        $product = Product::where('id',$id)->with('product.product_images', 'brand', 'category')->first();
         $stockProduct = StockProduct::where('product_id', $id)->with('product.product_images','product.brand', 'weight', 'flavour')->get();
         $weight = Weight::get();
         $flavours = Flavour::get();

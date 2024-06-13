@@ -98,6 +98,7 @@ class CartController extends Controller
                     'quantity' => $quantity,
                     'final_price' => $price,
                     'reserved_until' => $reservedUntil,
+                    'promotion_id' => null,
                 ]);
             }
         } else {
@@ -122,6 +123,7 @@ class CartController extends Controller
                     'quantity' => $quantity,
                     'final_price' => $price,
                     'reserved_until' => $reservedUntil->timestamp,
+                    'promotion_id' => null,
                 ];
             }
             Cart::setCookieCartItems($cartItems);
