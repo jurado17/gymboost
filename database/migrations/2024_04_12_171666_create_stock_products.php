@@ -20,8 +20,7 @@ return new class extends Migration
             $table->boolean('isSotcked')->default(false);
             $table->timestamps();
             
-            // Añadir índice compuesto único
-            $table->unique(['product_id', 'weight_id', 'flavour_id']);
+            
         });
     }
 
