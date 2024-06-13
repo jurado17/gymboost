@@ -145,7 +145,6 @@ class CheckoutController extends Controller
         }
     }
 
-
     public function success(Request $request)
     {
         // Obtener detalles del usuario
@@ -154,33 +153,38 @@ class CheckoutController extends Controller
         $cartItems = $request->cartItems;
         $address = $request->address;
         $sessionId = session()->getId();
-
-
-        dd($address);
-        //resta el stock de los productos
+    
+        // Convertir $address en objeto si es un array
+        if (is_array($address)) {
+            $address = (object) $address;
+        }
+    
+        // Verificar que $address es un objeto
+        if (!is_object($address)) {
+            return response()->json(['error' => 'Invalid address data'], 400);
+        }
+    
+        // Resta el stock de los productos
         $this->decreaseStock($cartItems);
-
-        // // Guardar la nueva dirección del usuario
-        // $this->saveNewAddress($user, $address);
-
-        //crea un backup de la orden para mostrarla en la vista orderSummary
+    
+        // Crear un backup de la orden para mostrarla en la vista orderSummary
         $cartBackup = $this->createCartBackup($user, $products, $cartItems);
-
+    
         // Crear la orden en la base de datos
         $order = $this->createOrder($request, $user, $address, $sessionId);
-
+    
         // Crear los elementos de la orden
         $this->createOrderItems($user, $order);
-
+    
         // Crear el pago en la base de datos
         $this->createPayment($user, $order);
-
+    
         // Enviar correo electrónico de confirmación (opcional)
         Mail::to($user->email)->send(new OrderInvoice($order));
-
-
+    
         return Inertia::render('User/OrderSummary', ['order' => $order, 'cartData' => $cartBackup, 'userAddress' => $address]);
     }
+    
 
 
     public function cancel(Request $request)
