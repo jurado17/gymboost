@@ -55,6 +55,7 @@ const resetFormData = () => {
 }
 
 const openAddModal = () => {
+    console.log(props.product);
     resetFormData();
     isAddProduct.value = true;
     dialogVisible.value = true;
@@ -63,7 +64,7 @@ const openAddModal = () => {
 
 const addProduct = async () => {
     const data = {
-        product_id: props.product.id || '',
+        product_id: props.product.id,
         flavour_id: flavour_id.value,
         weight_id: weight_id.value,
         quantity: quantity.value,

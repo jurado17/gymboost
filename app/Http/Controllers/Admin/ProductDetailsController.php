@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Flavour;
 use App\Models\OrderItem;
+use App\Models\Product;
 use App\Models\StockProduct;
 use App\Models\Weight;
 use Illuminate\Http\Request;
@@ -14,12 +15,13 @@ class ProductDetailsController extends Controller
 {
     public function index($id)
     {   
+        $product = Product::where('id',$id)->first();
         $stockProduct = StockProduct::where('product_id', $id)->with('product.product_images','product.brand', 'weight', 'flavour')->get();
         $weight = Weight::get();
         $flavours = Flavour::get();
         $orderItems = OrderItem::where('product_id', $id)->sum('quantity');
 
-        return Inertia::render('Admin/Products/DetailsProduct', ['stockProduct' => $stockProduct, 'weights' => $weight, 'flavours' => $flavours, 'orderItems' => $orderItems]);
+        return Inertia::render('Admin/Products/DetailsProduct', ['product' => $product,'stockProduct' => $stockProduct, 'weights' => $weight, 'flavours' => $flavours, 'orderItems' => $orderItems]);
     }
 
     public function store(Request $request)
