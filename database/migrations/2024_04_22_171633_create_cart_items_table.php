@@ -19,8 +19,8 @@ return new class extends Migration
             $table->foreignId('weight_id')->references('id')->on('weights')->nullable();
             $table->foreignId('flavour_id')->references('id')->on('flavours')->nullable();
             $table->integer('quantity');
-            $table->decimal('final_price',10,2);
-            $table->foreignId('promotion_id')->references('id')->on('promotions')->nullable();
+            $table->decimal('final_price', 10, 2);
+            $table->foreignId('promotion_id')->nullable()->constrained('promotions');
             $table->timestamps();
         });
         
