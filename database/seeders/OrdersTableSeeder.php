@@ -16,7 +16,7 @@ class OrdersTableSeeder extends Seeder
             DB::table('orders')->insert([
                 'total_price' => $faker->randomFloat(2, 20, 500),
                 'status' => $faker->randomElement(['pending', 'completed', 'cancelled']),
-                'sesison_id' => $faker->uuid,
+                'sessison_id' => $faker->uuid,
                 'user_address_id' => $faker->numberBetween(1, 10),
                 'created_by' => $faker->optional()->numberBetween(1, 10),
                 'updated_by' => $faker->optional()->numberBetween(1, 10),
