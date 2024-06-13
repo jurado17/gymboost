@@ -196,7 +196,7 @@ const resetFilters = () => {
                     <div class="bg-white rounded-lg shadow p-6">
                         <div class="flex flex-wrap -mx-2">
                             <div class="px-2 inline-flex justify-center items-center space-x-6">
-                                <img :src="`storage/${props.product.product_images[0].image}`" width="80" height="80"
+                                <img :src="`/storage/${props.product.product_images[0].image}`" width="80" height="80"
                                     class="rounded" alt="">
                                 <label class="block text-lg font-medium text-gray-700">{{ props.product?.name
                                     || '' }}</label>
