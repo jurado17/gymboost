@@ -31,18 +31,26 @@ class AplyPromController extends Controller
         return redirect()->back()->with('success','Promocion aplicada con exito');
     }
 
-    public function updatePromotion(Request $request, $id){
-        $idProduct = $request->product_id;
-
-        $product = Product::where('id',$id)->findOrFail();
-
-        $product->promotion_id = $request->promotion_id;
-        $product->update();
-        
-        return redirect()->back()->with('success','Promocion aplicada con exito');
+    public function update(Request $request){
+        $productIds = $request->product_ids;
+        $promotionId = $request->promotion_id;
+    
+        Product::whereIn('id', $productIds)->update(['promotion_id' => $promotionId]);
+    
+        return redirect()->back()->with('success', 'Promociones actualizadas con éxito');
     }
+    
 
-    public function delete($id){
-
+    public function delete(Request $request) {
+        $productIds = $request->input('product_ids', []);
+    
+        if (count($productIds) > 0) {
+            Product::whereIn('id', $productIds)->update(['promotion_id' => null]);
+            return response()->json(['success' => 'Promociones eliminadas con éxito']);
+        } else {
+            return response()->json(['error' => 'No se proporcionaron IDs de productos'], 400);
+        }
     }
+    
+    
 }

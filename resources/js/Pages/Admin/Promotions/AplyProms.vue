@@ -2,7 +2,7 @@
 import AdminLayout from '../Components/AdminLayout.vue';
 import { ref, computed } from 'vue';
 import { router } from '@inertiajs/vue3';
-
+import axios from 'axios';
 
 const props = defineProps({
     aplyPromProduct: Array,
@@ -103,7 +103,7 @@ const updatePromotion = async () => {
     }
 
     try {
-        await router.post(route('admin.aplyProms.update', data), {
+        await router.put(route('admin.aplyProms.update', data), {
             onSuccess: page => {
                 Swal.fire({
                     toast: true,
@@ -122,11 +122,71 @@ const updatePromotion = async () => {
     } catch (error) {
         console.log(error);
     }
+    dialogEditVisible.value = false;
+    resetFormData();
+    resetCheckbox();
 }
 
 const resetCheckbox = () => {
     selectedProducts.value = []
 }
+const deletePromotions = async () => {
+    Swal.fire({
+        title: '¿Estas Seguro?',
+        text: 'Esta acción no se puede deshacer',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        cancelButtonText: 'NO',
+        confirmButtonText: 'Sí, eliminar'
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            const data = {
+                product_ids: selectedProducts.value,
+            };
+
+            try {
+                const response = await axios.delete(route('admin.aplyProms.delete'), {
+                    data: data,
+                });
+
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    title: response.data.success,
+                    timer: 2000,
+                    timerProgressBar: true,
+                });
+
+                // Reset the form data and checkboxes
+                selectedProducts.value = [];
+                resetFormData();
+                resetCheckbox();
+                
+                location.reload(); 
+            } catch (error) {
+                console.log(error);
+
+                Swal.fire({
+                    toast: true,
+                    icon: 'error',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    title: 'Error al eliminar productos',
+                    timer: 2000,
+                    timerProgressBar: true,
+                });
+            }
+        }
+    });
+};
+
+
+
+
 </script>
 
 
@@ -199,7 +259,7 @@ const resetCheckbox = () => {
                                         </li>
                                     </ul>
                                     <div class="py-1">
-                                        <a href="#"
+                                        <a href="#" @click="deletePromotions()"
                                             class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Borrar
                                         </a>
                                     </div>
