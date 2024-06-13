@@ -80,7 +80,7 @@ class CheckoutController extends Controller
         $order->total_price = $request->total;
         $order->session_id = $sessionId;
         $order->created_by = $user->id;
-        $order->user_address_id = $address['id'];
+        $order->user_address_id = $address->user_id;
         $order->save();
 
         return $order;
