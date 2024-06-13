@@ -196,12 +196,10 @@ const resetFilters = () => {
                     <div class="bg-white rounded-lg shadow p-6">
                         <div class="flex flex-wrap -mx-2">
                             <div class="px-2 inline-flex justify-center items-center space-x-6">
-                                <img :src="`/storage/${props.product.product_images[0].image}`" width="80" height="80"
-                                    class="rounded" alt="">
-                                <label class="block text-lg font-medium text-gray-700">{{ props.product?.name
-                                    || '' }}</label>
-                                <label class="block text-lg font-medium text-gray-700">{{
-                                    props.product?.brand.name || '' }}</label>
+                                <img :src="`/storage/${productImage}`" width="80" height="80" class="rounded" alt="">
+                                <label class="block text-lg font-medium text-gray-700">{{ props.product?.name || 'Nombre no disponible' }}</label>
+                                <label class="block text-lg font-medium text-gray-700">{{ props.product?.brand?.name ||
+                                    'Marca no disponible' }}</label>
                             </div>
                         </div>
                     </div>
@@ -352,7 +350,7 @@ const resetFilters = () => {
                                                 v-if="Array.isArray(filteredProducts) && filteredProducts.length > 0">
                                                 <tr v-for="product in filteredProducts" :key="product.id"
                                                     class="border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
-                                                    
+
                                                     <th scope="row"
                                                         class="flex items-center px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                         {{ product.flavour.name }}
@@ -435,7 +433,7 @@ const resetFilters = () => {
                                     </table>
 
                                 </div>
-                            
+
                             </div>
                         </div>
                     </section>
@@ -453,7 +451,7 @@ const resetFilters = () => {
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                         <option v-for="weight in weights" :key="weight.id" :value="weight.id">{{
                                             weight.name
-                                        }}</option>
+                                            }}</option>
                                     </select>
                                 </div>
 
@@ -464,7 +462,7 @@ const resetFilters = () => {
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                         <option v-for="flavour in flavours" :key="flavour.id" :value="flavour.id">{{
                                             flavour.name
-                                        }}</option>
+                                            }}</option>
                                     </select>
                                 </div>
 
