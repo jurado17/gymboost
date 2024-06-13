@@ -4,7 +4,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
-class WeightSeeder extends Seeder
+class WeightsTableSeeder extends Seeder
 {
     public function run()
     {
