@@ -13,11 +13,11 @@ class WeightsTableSeeder extends Seeder
         $faker = Faker::create();
 
         $specificWeights = [
-            ['name' => 'Light', 'weight_g' => 1000, 'price' => 10.00],
-            ['name' => 'Medium', 'weight_g' => 2000, 'price' => 18.00],
-            ['name' => 'Heavy', 'weight_g' => 3000, 'price' => 25.00],
-            ['name' => 'Super Heavy', 'weight_g' => 4000, 'price' => 32.00],
-            ['name' => 'Ultra Heavy', 'weight_g' => 5000, 'price' => 40.00],
+            ['name' => 'Monodosis(50g)', 'weight_g' => 50, 'price' => 0.05],
+            ['name' => '200g', 'weight_g' => 200, 'price' => 0.20],
+            ['name' => '500g', 'weight_g' => 500, 'price' => 0.50],
+            ['name' => '1Kg', 'weight_g' => 1000, 'price' => 1.00],
+            ['name' => '2Kg', 'weight_g' => 2000, 'price' => 2.00],
         ];
 
         foreach ($specificWeights as $weight) {
