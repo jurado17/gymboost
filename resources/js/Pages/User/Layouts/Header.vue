@@ -99,7 +99,7 @@ onMounted(() => {
                                 placeholder="Search...">
                             <div v-if="searchResults.length" v-bind:hidden="searchResults.value === ''"
                                 class="absolute z-10 w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg mt-1">
-                                <ul class="py-1">
+                                <ul class="py-1 max-h-80 overflow-y-auto">
                                     <li v-for="result in searchResults" :key="result.id"
                                         class="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800">
                                         <Link :href="`/${result.slug}`"
@@ -263,11 +263,7 @@ onMounted(() => {
                                 </svg>
                             </button>
                         </li>
-                        <li>
-                            <Link :href="route('products.index')" class="text-white hover:underline">
-                            Ver Todos
-                            </Link>
-                        </li>
+                        
                     </ul>
                 </div>
             </div>
@@ -291,7 +287,7 @@ onMounted(() => {
 
         <!-- Menú lateral deslizante -->
         <div v-if="sidebarOpen"
-            class="fixed inset-y-0 left-0 w-64 bg-white border-r lg:hidden border-gray-200 dark:bg-gray-900 transform ease-in-out transition-all duration-300 z-50 shadow-lg">
+            class="fixed inset-y-0 left-0 w-64  bg-white border-r lg:hidden border-gray-200 dark:bg-gray-900 transform ease-in-out transition-all duration-300 z-50 shadow-lg">
             <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800">
                 <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200">GymBoost</h2>
                 <button @click="closeSidebar"
@@ -303,7 +299,7 @@ onMounted(() => {
                     </svg>
                 </button>
             </div>
-            <ul class="p-4 space-y-2">
+            <ul class="p-4 space-y-2 text-gray-900">
                 <li>
                     <Link :href="route('user.home')"
                         class="block py-2 px-3 text-sm rounded-md text-white bg-blue-500 hover:bg-blue-600">
@@ -314,7 +310,7 @@ onMounted(() => {
                 <!-- Dropdown for Brands -->
                 <li>
                     <button @click="toggleDropdown" id="mega-menu-full-dropdown-button"
-                        class="flex items-center justify-between w-full py-2 px-3 text-sm text-white rounded-md hover:bg-gray-100 dark:hover:bg-gray-800">
+                        class="flex items-center justify-between w-full py-2 px-3 text-sm  rounded-md hover:bg-gray-100 dark:hover:bg-gray-800">
                         Marcas
                         <svg class="w-4 h-4 ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                             viewBox="0 0 10 6">
@@ -325,10 +321,10 @@ onMounted(() => {
 
                     <nav v-if="dropdownOpen"
                         class="mt-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-md shadow-lg">
-                        <ul class="p-4 space-y-2">
+                        <ul class="p-4 space-y-2 max-h-48 overflow-y-auto">
                             <li v-for="brand in brands" :key="brand.id">
                                 <Link :href="`/products?brand=${brand.id}`"
-                                    class="block py-2 px-3 text-sm rounded-md text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                                    class="block py-2 px-3 text-sm rounded-md  hover:bg-gray-100 dark:hover:bg-gray-700">
                                 {{ brand.name }}
                                 </Link>
                             </li>
@@ -338,7 +334,7 @@ onMounted(() => {
 
                 <li v-for="category in categories" :key="category.id">
                     <Link :href="`/products?category=${category.name}`"
-                        class="block py-2 px-3 text-sm rounded-md text-white hover:bg-gray-100 dark:hover:bg-gray-800">
+                        class="block py-2 px-3 text-sm rounded-md  hover:bg-gray-100 dark:hover:bg-gray-800">
                     {{ category.name }}
                     </Link>
                 </li>

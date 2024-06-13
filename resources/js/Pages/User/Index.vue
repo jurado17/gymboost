@@ -113,18 +113,14 @@ const addToCart = (product, weight, flavour, quantity, price) => {
 
         <CategoryCard></CategoryCard>
 
-        <!--START HERO SECTION-->
-        <Hero></Hero>
-        <!--END HERO SECTION-->
-
+    
         <div class="bg-white">
             <section class="bg-white dark:bg-gray-900">
                 <div class=" px-1 mx-auto max-w-screen-xl">
                     <div class="mx-auto max-w-screen-md text-center mb-8 lg:mb-12">
-                        <p class="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
+                        <p class="my-24 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
                             Productos Recomendados</p>
-                        <p class="mb-5 font-light text-gray-500 sm:text-xl dark:text-gray-400">Esta es la selección de
-                            productos recomendados por nuestro equipo.</p>
+                        
                     </div>
 
                     <div class="lg:grid  lg:grid-cols-4 sm:gap-6 xl:gap-10 lg:space-y-0">
@@ -163,7 +159,7 @@ const addToCart = (product, weight, flavour, quantity, price) => {
                         </div>
                     </div>
                     <div class="flex justify-center items-center text-center pb-10">
-                        <Link class="p-2 border-2 hover:bg-cyan-900 hover:text-white transition">Ver mas</Link>
+                        <Link :href="route('products.index')" class="p-2 border-2 hover:bg-cyan-900 hover:text-white transition">Ver todos</Link>
                     </div>
                 </div>
             </section>
@@ -294,5 +290,11 @@ const addToCart = (product, weight, flavour, quantity, price) => {
                 </div>
             </Dialog>
         </TransitionRoot>
+
+
+        <!--START HERO SECTION-->
+        <Hero></Hero>
+        <!--END HERO SECTION-->
+
     </UserLayout>
 </template>

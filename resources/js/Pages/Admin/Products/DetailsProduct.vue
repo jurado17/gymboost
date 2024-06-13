@@ -1,9 +1,14 @@
 <script setup>
 import AdminLayout from '../Components/AdminLayout.vue';
-import { ref } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { router } from '@inertiajs/vue3';
-import { computed, watch } from 'vue';
+import Swal from 'sweetalert2';
+
 const props = defineProps({
+    product: {
+        type: Object,
+        required: true
+    },
     stockProduct: {
         type: Array,
         required: true
@@ -18,14 +23,11 @@ const props = defineProps({
     },
 });
 
-const product = ref(props.stockProduct)
-
 const id = ref('');
 const product_id = ref('');
 const flavour_id = ref('');
 const weight_id = ref('');
 const quantity = ref('');
-
 
 const dialogVisible = ref(false);
 const isAddProduct = ref(false);
@@ -61,7 +63,7 @@ const openAddModal = () => {
 
 const addProduct = async () => {
     const data = {
-        product_id: props.stockProduct[0].product.id,
+        product_id: props.product.id || '',
         flavour_id: flavour_id.value,
         weight_id: weight_id.value,
         quantity: quantity.value,
@@ -133,7 +135,6 @@ const editProduct = async () => {
     dialogVisible.value = false;
 }
 
-//Borrar Producto
 const deleteProduct = (id, index) => {
     Swal.fire({
         title: '¿Estas Seguro?',
@@ -149,7 +150,6 @@ const deleteProduct = (id, index) => {
             try {
                 router.delete(route('admin.productDetail.destroy', id), {
                     onSuccess: (page) => {
-                        deleteProduct(product, index);
                         Swal.fire({
                             toast: true,
                             icon: 'success',
@@ -160,7 +160,7 @@ const deleteProduct = (id, index) => {
                     }
                 })
             } catch (error) {
-
+                console.log(error);
             }
         }
     });
@@ -170,12 +170,9 @@ const filteredProducts = computed(() => {
     return props.stockProduct.filter(product => {
         const matchesFlavour = selectedFlavours.value.length === 0 || selectedFlavours.value.includes(product.flavour_id);
         const matchesWeight = selectedWeights.value.length === 0 || selectedWeights.value.includes(product.weight_id);
-
         return matchesFlavour && matchesWeight;
     });
 });
-
-
 
 watch([selectedFlavours, selectedWeights], () => {
     console.log('Filters updated:', selectedFlavours.value, selectedWeights.value);
@@ -184,9 +181,11 @@ watch([selectedFlavours, selectedWeights], () => {
 const resetFilters = () => {
     selectedFlavours.value = [];
     selectedWeights.value = [];
+    filteredProducts
 };
 
 </script>
+
 
 <template>
     <AdminLayout>
@@ -197,12 +196,12 @@ const resetFilters = () => {
                     <div class="bg-white rounded-lg shadow p-6">
                         <div class="flex flex-wrap -mx-2">
                             <div class="px-2 inline-flex justify-center items-center space-x-6">
-                                <img :src="`/${stockProduct[0].product.product_images[0].image}`" width="80" height="80"
+                                <img :src="`/${props.product.product_images[0].image}`" width="80" height="80"
                                     class="rounded" alt="">
-                                <label class="block text-lg font-medium text-gray-700">{{ stockProduct[0].product.name
-                                    }}</label>
+                                <label class="block text-lg font-medium text-gray-700">{{ props.product?.name
+                                    || '' }}</label>
                                 <label class="block text-lg font-medium text-gray-700">{{
-                                    stockProduct[0].product.brand.name }}</label>
+                                    props.product?.brand.name || '' }}</label>
                             </div>
                         </div>
                     </div>
@@ -314,7 +313,7 @@ const resetFilters = () => {
                                                 </svg>
                                             </button>
                                             <div id="filterFlavourDropdown"
-                                                class="absolute z-30 hidden w-48 p-3 bg-white rounded-lg shadow dark:bg-gray-700">
+                                                class="absolute z-30 hidden w-48 max-h-48 overflow-y-auto p-3 bg-white rounded-lg shadow dark:bg-gray-700">
                                                 <ul class="space-y-2 text-sm"
                                                     aria-labelledby="filterFlavourDropdownButton">
                                                     <li v-for="flavour in props.flavours" :key="flavour.id"
@@ -329,22 +328,15 @@ const resetFilters = () => {
                                                     </li>
                                                 </ul>
                                             </div>
+
                                         </div>
                                     </div>
                                 </div>
-                                <div class="overflow-x-auto">
-                                    <table v-if="product.length > 0"
-                                        class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                                <div class="overflow-x-auto pb-36">
+                                    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 pb-24">
                                         <thead
                                             class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                             <tr>
-                                                <th scope="col" class="p-4">
-                                                    <div class="flex items-center">
-                                                        <input id="checkbox-all" type="checkbox"
-                                                            class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-blue-600 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                                        <label for="checkbox-all" class="sr-only">checkbox</label>
-                                                    </div>
-                                                </th>
                                                 <th scope="col" class="px-4 py-3">Sabor</th>
                                                 <th scope="col" class="px-4 py-3">Peso</th>
                                                 <th scope="col" class="px-4 py-3">Stock</th>
@@ -355,127 +347,95 @@ const resetFilters = () => {
                                                 <th scope="col" class="px-4 py-3">Accciones</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                            <tr v-for="product in filteredProducts" :key="product.id"
-                                                class="border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
-                                                <td class="w-4 px-4 py-3">
-                                                    <div class="flex items-center">
-                                                        <input id="checkbox-table-search-1" type="checkbox"
-                                                            onclick="event.stopPropagation()"
-                                                            class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-blue-600 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                                        <label for="checkbox-table-search-1"
-                                                            class="sr-only">checkbox</label>
-                                                    </div>
-                                                </td>
-                                                <th scope="row"
-                                                    class="flex items-center px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    {{ product.flavour.name }}
-                                                </th>
-                                                <td class="px-4 py-2">
-                                                    <span
-                                                        class="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">
-                                                        {{ product.weight.name }}
-                                                    </span>
-                                                </td>
-                                                <td
-                                                    class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    <div class="flex items-center">
-                                                        <div class="inline-block w-4 h-4 mr-2 rounded-full"
-                                                            :class="getQuantityColor(product.quantity)">
+                                        <tbody class="">
+                                            <template
+                                                v-if="Array.isArray(filteredProducts) && filteredProducts.length > 0">
+                                                <tr v-for="product in filteredProducts" :key="product.id"
+                                                    class="border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                                    
+                                                    <th scope="row"
+                                                        class="flex items-center px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                        {{ product.flavour.name }}
+                                                    </th>
+                                                    <td class="px-4 py-2">
+                                                        <span
+                                                            class="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">
+                                                            {{ product.weight.name }}
+                                                        </span>
+                                                    </td>
+                                                    <td
+                                                        class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                        <div class="flex items-center">
+                                                            <div class="inline-block w-4 h-4 mr-2 rounded-full"
+                                                                :class="getQuantityColor(product.quantity)">
+                                                            </div>
+                                                            {{ product.quantity }}
                                                         </div>
-                                                        {{ product.quantity }}
-                                                    </div>
-                                                </td>
-                                                <td
-                                                    class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    </td>
+                                                    <td
+                                                        class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                        <span v-if="product.isStocked"
+                                                            class="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">En
+                                                            stock</span>
+                                                        <span v-else
+                                                            class="bg-red-100 text-red-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">Sin
+                                                            Stock</span>
+                                                    </td>
+                                                    <td
+                                                        class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                        0.47
+                                                    </td>
+                                                    <td
+                                                        class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                        <div class="flex items-center">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                                fill="currentColor" class="w-5 h-5 mr-2 text-gray-400"
+                                                                aria-hidden="true">
+                                                                <path
+                                                                    d="M2.25 2.25a.75.75 0 000 1.5h1.386c.17 0 .318.114.362.278l2.558 9.592a3.752 3.752 0 00-2.806 3.63c0 .414.336.75.75.75h15.75a.75.75 0 000-1.5H5.378A2.25 2.25 0 017.5 15h11.218a.75.75 0 00.674-.421 60.358 60.358 0 002.96-7.228.75.75 0 00-.525-.965A60.864 60.864 0 005.68 4.509l-.232-.867A1.875 1.875 0 003.636 2.25H2.25zM3.75 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM16.5 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z" />
+                                                            </svg>
+                                                            1.6M
+                                                        </div>
+                                                    </td>
+                                                    <td
+                                                        class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                        {{ new Date(product.updated_at).toLocaleDateString() }}
+                                                    </td>
+                                                    <td class="px-4 py-2 inline-flex space-x-2">
+                                                        <button type="button" @click="openEditModal(product)"
+                                                            class="flex items-center justify-center px-3 py-2 text-sm font-medium text-white rounded-lg bg-yellow-300 hover:bg-yellow-400 focus:ring-4 focus:ring-blue-300 dark:bg-yellow-300 dark:hover:bg-yellow-300 focus:outline-none dark:focus:ring-yellow-400 transition duration-300">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
+                                                                fill="currentColor" class="size-4 ">
+                                                                <path
+                                                                    d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.262a1.75 1.75 0 0 0 0-2.474Z" />
+                                                                <path
+                                                                    d="M4.75 3.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h6.5c.69 0 1.25-.56 1.25-1.25V9A.75.75 0 0 1 14 9v2.25A2.75 2.75 0 0 1 11.25 14h-6.5A2.75 2.75 0 0 1 2 11.25v-6.5A2.75 2.75 0 0 1 4.75 2H7a.75.75 0 0 1 0 1.5H4.75Z" />
+                                                            </svg>
+                                                        </button>
 
-                                                    <span v-if="product.isStocked"
-                                                        class="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">En
-                                                        stock</span>
-
-                                                    <span v-else
-                                                        class="bg-red-100 text-red-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">Sin
-                                                        Stock</span>
-                                                </td>
-                                                <td
-                                                    class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    0.47</td>
-
-                                                <td
-                                                    class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    <div class="flex items-center">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24"
-                                                            fill="currentColor" class="w-5 h-5 mr-2 text-gray-400"
-                                                            aria-hidden="true">
-                                                            <path
-                                                                d="M2.25 2.25a.75.75 0 000 1.5h1.386c.17 0 .318.114.362.278l2.558 9.592a3.752 3.752 0 00-2.806 3.63c0 .414.336.75.75.75h15.75a.75.75 0 000-1.5H5.378A2.25 2.25 0 017.5 15h11.218a.75.75 0 00.674-.421 60.358 60.358 0 002.96-7.228.75.75 0 00-.525-.965A60.864 60.864 0 005.68 4.509l-.232-.867A1.875 1.875 0 003.636 2.25H2.25zM3.75 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM16.5 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z" />
-                                                        </svg>
-                                                        1.6M
-                                                    </div>
-                                                </td>
-
-                                                <td
-                                                    class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    {{ new Date(product.updated_at).toLocaleDateString() }}
-                                                </td>
-
-                                                <td class="px-4 py-2 inline-flex space-x-2">
-                                                    <button type="button" @click="openEditModal(product)"
-                                                        class="flex items-center justify-center px-3 py-2 text-sm font-medium text-white rounded-lg bg-yellow-300 hover:bg-yellow-400 focus:ring-4 focus:ring-blue-300 dark:bg-yellow-300 dark:hover:bg-yellow-300 focus:outline-none dark:focus:ring-yellow-400 transition duration-300">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
-                                                            fill="currentColor" class="size-4 ">
-                                                            <path
-                                                                d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.262a1.75 1.75 0 0 0 0-2.474Z" />
-                                                            <path
-                                                                d="M4.75 3.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h6.5c.69 0 1.25-.56 1.25-1.25V9A.75.75 0 0 1 14 9v2.25A2.75 2.75 0 0 1 11.25 14h-6.5A2.75 2.75 0 0 1 2 11.25v-6.5A2.75 2.75 0 0 1 4.75 2H7a.75.75 0 0 1 0 1.5H4.75Z" />
-                                                        </svg>
-                                                    </button>
-
-                                                    <button type="button" @click="deleteProduct(product.id)"
-                                                        class="flex items-center justify-center px-3 py-2 text-sm font-medium text-white rounded-lg bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-400 transition duration-300">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
-                                                            fill="currentColor" class="size-4">
-                                                            <path fill-rule="evenodd"
-                                                                d="M5 3.25V4H2.75a.75.75 0 0 0 0 1.5h.3l.815 8.15A1.5 1.5 0 0 0 5.357 15h5.285a1.5 1.5 0 0 0 1.493-1.35l.815-8.15h.3a.75.75 0 0 0 0-1.5H11v-.75A2.25 2.25 0 0 0 8.75 1h-1.5A2.25 2.25 0 0 0 5 3.25Zm2.25-.75a.75.75 0 0 0-.75.75V4h3v-.75a.75.75 0 0 0-.75-.75h-1.5ZM6.05 6a.75.75 0 0 1 .787.713l.275 5.5a.75.75 0 0 1-1.498.075l-.275-5.5A.75.75 0 0 1 6.05 6Zm3.9 0a.75.75 0 0 1 .712.787l-.275 5.5a.75.75 0 0 1-1.498-.075l.275-5.5a.75.75 0 0 1 .786-.711Z"
-                                                                clip-rule="evenodd" />
-                                                        </svg>
-
-                                                    </button>
-                                                </td>
-                                            </tr>
-
+                                                        <button type="button" @click="deleteProduct(product.id)"
+                                                            class="flex items-center justify-center px-3 py-2 text-sm font-medium text-white rounded-lg bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-400 transition duration-300">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
+                                                                fill="currentColor" class="size-4">
+                                                                <path fill-rule="evenodd"
+                                                                    d="M5 3.25V4H2.75a.75.75 0 0 0 0 1.5h.3l.815 8.15A1.5 1.5 0 0 0 5.357 15h5.285a1.5 1.5 0 0 0 1.493-1.35l.815-8.15h.3a.75.75 0 0 0 0-1.5H11v-.75A2.25 2.25 0 0 0 8.75 1h-1.5A2.25 2.25 0 0 0 5 3.25Zm2.25-.75a.75.75 0 0 0-.75.75V4h3v-.75a.75.75 0 0 0-.75-.75h-1.5ZM6.05 6a.75.75 0 0 1 .787.713l.275 5.5a.75.75 0 0 1-1.498.075l-.275-5.5A.75.75 0 0 1 6.05 6Zm3.9 0a.75.75 0 0 1 .712.787l-.275 5.5a.75.75 0 0 1-1.498-.075l.275-5.5a.75.75 0 0 1 .786-.711Z"
+                                                                    clip-rule="evenodd" />
+                                                            </svg>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                            <template v-else>
+                                                <tr>
+                                                    <td colspan="9" class="px-4 py-3 text-center">No hay productos
+                                                        disponibles</td>
+                                                </tr>
+                                            </template>
                                         </tbody>
                                     </table>
 
-                                    <div v-else
-                                        class="flex items-center justify-center h-24 text-gray-500 dark:text-gray-400">
-                                        No hay productos disponibles.
-                                    </div>
                                 </div>
-                                <nav class="flex flex-col items-start justify-between p-4 space-y-3 md:flex-row md:items-center md:space-y-0"
-                                    aria-label="Table navigation">
-                                    <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                                        Showing
-                                        <span class="font-semibold text-gray-900 dark:text-white">1-10</span>
-                                        of
-                                        <span class="font-semibold text-gray-900 dark:text-white">1000</span>
-                                    </span>
-                                    <ul class="inline-flex items-stretch -space-x-px">
-                                        <li>
-                                            <a href="#"
-                                                class="flex items-center justify-center h-full py-1.5 px-3 ml-0 text-gray-500 bg-white rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                                                <span class="sr-only">Previous</span>
-                                                <svg class="w-5 h-5" aria-hidden="true" fill="currentColor"
-                                                    viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                                    <path fill-rule="evenodd"
-                                                        d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                                                        clip-rule="evenodd" />
-                                                </svg>
-                                            </a>
-                                        </li>
-
-                                    </ul>
-                                </nav>
+                            
                             </div>
                         </div>
                     </section>
@@ -493,7 +453,7 @@ const resetFilters = () => {
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                         <option v-for="weight in weights" :key="weight.id" :value="weight.id">{{
                                             weight.name
-                                            }}</option>
+                                        }}</option>
                                     </select>
                                 </div>
 
@@ -504,7 +464,7 @@ const resetFilters = () => {
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                         <option v-for="flavour in flavours" :key="flavour.id" :value="flavour.id">{{
                                             flavour.name
-                                            }}</option>
+                                        }}</option>
                                     </select>
                                 </div>
 

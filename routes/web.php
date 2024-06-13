@@ -160,11 +160,15 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
         Route::delete('/{id}', [PromotionController::class, 'delete'])->name('admin.promotions.delete');
     });
 
+    //Aply Promotions
     Route::prefix('promotions/aply')->group(function () {
         Route::get('/', [AplyPromController::class, 'index'])->name('admin.aplyProms.view');
         Route::post('/store', [AplyPromController::class, 'aplyPromotion'])->name('admin.aplyProms.store');
-        Route::delete('/delete/{id}', [AplyPromController::class, 'delete'])->name('admin.aplyProms.delete');
+        Route::put('/update', [AplyPromController::class, 'update'])->name('admin.aplyProms.update');
+        Route::delete('/delete', [AplyPromController::class, 'delete'])->name('admin.aplyProms.delete');
+
     });
+    
 
     // User Routes
     Route::prefix('users')->group(function () {
