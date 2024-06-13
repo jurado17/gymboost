@@ -18,6 +18,7 @@ class OrderItemsTableSeeder extends Seeder
                 'product_id' => $faker->numberBetween(1, 10),
                 'quantity' => $faker->numberBetween(1, 10),
                 'unit_price' => $faker->randomFloat(2, 1, 100),
+                'created_by' => $faker->numberBetween(1, 10),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

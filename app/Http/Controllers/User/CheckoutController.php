@@ -36,7 +36,7 @@ class CheckoutController extends Controller
     }
 
 
-    private function createOrderItems($user, $order, $total)
+    private function createOrderItems($user, $order)
     {
         $cartItems = CartItem::whereUserId($user->id)->get();
         foreach ($cartItems as $cartItem) {
@@ -168,7 +168,7 @@ class CheckoutController extends Controller
         $order = $this->createOrder($request, $user, $address, $sessionId);
 
         // Crear los elementos de la orden
-        $this->createOrderItems($user, $order, $request->total);
+        $this->createOrderItems($user, $order);
 
         // Crear el pago en la base de datos
         $this->createPayment($user, $order);

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('product_id')->references('id')->on('stock_products');
             $table->integer('quantity');
             $table->decimal('unit_price');
+            $table->foreignId('created_by')->references('id')->on('users');
             $table->timestamps();
         });
     }
