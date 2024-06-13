@@ -155,6 +155,8 @@ class CheckoutController extends Controller
         $address = $request->address;
         $sessionId = session()->getId();
 
+
+        dd($address);
         //resta el stock de los productos
         $this->decreaseStock($cartItems);
 
