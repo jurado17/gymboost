@@ -34,6 +34,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile/address/delete/{id}', [UserController::class, 'delete'])->name('user.profile.useraddress.delete');
 
     Route::get('/profile/address/order', [UserController::class, 'profileUserOrders'])->name('user.profile.order');
+
     Route::get('/profile/address/order/{id}', [UserController::class, 'orderDetails'])->name('user.profile.order.detail');
     
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -86,10 +87,11 @@ Route::middleware('auth')->prefix('order-summary')->group(function () {
 });
 
 // Checkout Routes
-Route::middleware('auth')->group(function () {
-    Route::get('/checkout/{total}', [CheckoutController::class, 'index'])->name('checkout.index');
-    Route::post('/checkout/success', [CheckoutController::class, 'success'])->name('checkout.success');
-    Route::get('/checkout/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
+Route::middleware('auth')->prefix('checkout')->group(function () {
+    Route::get('/{total}', [CheckoutController::class, 'index'])->name('checkout.index');
+    Route::post('/success', [CheckoutController::class, 'success'])->name('checkout.success');
+    Route::get('/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
+    Route::post('/newAddress',[CheckoutController::class, 'saveNewAddress'])->name('checkout.newAddress');
 });
 
 // Start Admin Routes

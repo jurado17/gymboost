@@ -36,7 +36,7 @@ class CheckoutController extends Controller
     }
 
 
-    private function createOrderItems($user, $order)
+    private function createOrderItems($user, $order, $total)
     {
         $cartItems = CartItem::whereUserId($user->id)->get();
         foreach ($cartItems as $cartItem) {
@@ -54,7 +54,21 @@ class CheckoutController extends Controller
         }
     }
 
-    private function saveNewAddress($user, $newAddress)
+    public function saveNewAddress(Request $request)
+    {
+        $validated = $request->validate([
+            'country_code' => 'required|string|max:2',
+            'city' => 'required|string|max:255',
+            'province' => 'required|string|max:255',
+            'address1' => 'required|string|max:255',
+            'zip_code' => 'required|string|max:10',
+        ]);
+
+        $user = auth()->user();
+        $this->saveNewAddressToDB($user, $validated);
+    }
+
+    private function saveNewAddressToDB($user, $newAddress)
     {
         $addressCount = UserAddress::where('isMain', 1)->count();
         if ($addressCount > 0) {
@@ -73,6 +87,7 @@ class CheckoutController extends Controller
         $address->save();
     }
 
+
     private function createOrder($request, $user, $address, $sessionId)
     {
         $order = new Order();
@@ -80,7 +95,7 @@ class CheckoutController extends Controller
         $order->total_price = $request->total;
         $order->session_id = $sessionId;
         $order->created_by = $user->id;
-        $order->user_address_id = $address->id;
+        $order->user_address_id = $address['id'];
         $order->save();
 
         return $order;
@@ -145,6 +160,7 @@ class CheckoutController extends Controller
         }
     }
 
+
     public function success(Request $request)
     {
         // Obtener detalles del usuario
@@ -153,38 +169,31 @@ class CheckoutController extends Controller
         $cartItems = $request->cartItems;
         $address = $request->address;
         $sessionId = session()->getId();
-    
-        // Convertir $address en objeto si es un array
-        if (is_array($address)) {
-            $address = (object) $address;
-        }
-    
-        // Verificar que $address es un objeto
-        if (!is_object($address)) {
-            return response()->json(['error' => 'Invalid address data'], 400);
-        }
-    
-        // Resta el stock de los productos
+
+        //resta el stock de los productos
         $this->decreaseStock($cartItems);
-    
-        // Crear un backup de la orden para mostrarla en la vista orderSummary
+
+        // // Guardar la nueva dirección del usuario
+        // $this->saveNewAddress($user, $address);
+
+        //crea un backup de la orden para mostrarla en la vista orderSummary
         $cartBackup = $this->createCartBackup($user, $products, $cartItems);
-    
+
         // Crear la orden en la base de datos
         $order = $this->createOrder($request, $user, $address, $sessionId);
-    
+
         // Crear los elementos de la orden
-        $this->createOrderItems($user, $order);
-    
+        $this->createOrderItems($user, $order, $request->total);
+
         // Crear el pago en la base de datos
         $this->createPayment($user, $order);
-    
+
         // Enviar correo electrónico de confirmación (opcional)
         Mail::to($user->email)->send(new OrderInvoice($order));
-    
+
+
         return Inertia::render('User/OrderSummary', ['order' => $order, 'cartData' => $cartBackup, 'userAddress' => $address]);
     }
-    
 
 
     public function cancel(Request $request)

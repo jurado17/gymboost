@@ -1,7 +1,7 @@
 <script setup>
 import { Link } from '@inertiajs/inertia-vue3';
 import NavCheckout from './Components/NavCheckout.vue';
-import CheckOutProgress from '@/Pages/User/Components/CheckOutProgress.vue';
+import SummaryProgress from '@/Pages/User/Components/SummaryProgress.vue';
 
 const props = defineProps({
     userAddress: {
@@ -27,7 +27,7 @@ const show = () => {
     <NavCheckout></NavCheckout>
     <section class="bg-gray-100 py-8 antialiased dark:bg-gray-900 md:py-16">
         <form action="#" class="mx-auto max-w-screen-xl px-4 2xl:px-0 ">
-            <CheckOutProgress></CheckOutProgress>
+            <SummaryProgress></SummaryProgress>
             <div class="mx-auto max-w-3xl mt-6 bg-white rounded-xl p-6">
                 <h2 class="text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">Order summary</h2>
                 <div class="mt-6 space-y-4 border-b border-t border-gray-200 py-8 dark:border-gray-700 sm:mt-8">

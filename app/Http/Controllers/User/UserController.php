@@ -109,27 +109,48 @@ class UserController extends Controller
     }
 
     public function profileUserOrders(Request $request)
-    {
-        $user = $request->user();
+{
+    $user = $request->user();
+    $duration = $request->query('duration', 'this week'); // Duración predeterminada a "this week"
+    
+    $userAddress = UserAddress::where('user_id', $user->id)->get();
 
-        $userAddress = UserAddress::where('user_id', $user->id)->get();
+    $query = Order::where('created_by', $user->id);
 
-        $orders = Order::where('created_by', $user->id)->get();
-
-        $ordersUserIds = $orders->pluck('id');
-        $orderItemUser = OrderItem::whereIn('order_id', $ordersUserIds)
-            ->with('product') // Cargar la relación product
-            ->get();
-
-
-
-        return Inertia::render('User/Account/UserOrders', [
-            'user' => $user,
-            'userAddress' => $userAddress,
-            'orders' => $orders,
-            'orderItemUser' => $orderItemUser,
-        ]);
+    switch ($duration) {
+        case 'this month':
+            $query->where('created_at', '>=', now()->startOfMonth());
+            break;
+        case 'last 3 months':
+            $query->where('created_at', '>=', now()->subMonths(3));
+            break;
+        case 'last 6 months':
+            $query->where('created_at', '>=', now()->subMonths(6));
+            break;
+        case 'this year':
+            $query->where('created_at', '>=', now()->startOfYear());
+            break;
+        case 'this week':
+        default:
+            $query->where('created_at', '>=', now()->startOfWeek());
+            break;
     }
+
+    $orders = $query->get();
+
+    $ordersUserIds = $orders->pluck('id');
+    $orderItemUser = OrderItem::whereIn('order_id', $ordersUserIds)
+        ->with('product')
+        ->get();
+
+    return Inertia::render('User/Account/UserOrders', [
+        'user' => $user,
+        'userAddress' => $userAddress,
+        'orders' => $orders,
+        'orderItemUser' => $orderItemUser,
+    ]);
+}
+
 
     public function orderDetails($id){
         $orderItem = OrderItem::where('order_id', $id)->with('product.product_images','product.brand','product.category','stockItem.weight','stockItem.flavour')->get();

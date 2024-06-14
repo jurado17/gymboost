@@ -16,14 +16,13 @@ import {
 } from '@headlessui/vue'
 import { XMarkIcon } from '@heroicons/vue/24/outline'
 import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon } from '@heroicons/vue/20/solid'
-import { router, useForm } from '@inertiajs/vue3'
+import { useForm } from '@inertiajs/vue3'
+import { Inertia } from '@inertiajs/inertia'
 
 const sortOptions = [
-    { name: 'Most Popular', href: '#', current: true },
-    { name: 'Best Rating', href: '#', current: false },
-    { name: 'Newest', href: '#', current: false },
-    { name: 'Price: Low to High', href: '#', current: false },
-    { name: 'Price: High to Low', href: '#', current: false },
+    { name: 'Nuevo', href: '#', current: false },
+    { name: 'Precio: Mas Bajo Primero', href: '#', current: false },
+    { name: 'Precio: Mas Alto Primero', href: '#', current: false },
 ]
 
 const props = defineProps({
@@ -37,8 +36,26 @@ const priceFilter = useForm({
     prices: [0, 1000]
 })
 
-// Método para filtrado de precios
-const filterPrices = () => {
+const selectedBrands = ref([]);
+const selectedCategories = ref([]);
+
+let debounceTimeout = null;
+
+watch([selectedBrands, selectedCategories], () => {
+    clearTimeout(debounceTimeout);
+    debounceTimeout = setTimeout(() => {
+        updateFilterProducts();
+    }, 300);
+});
+
+function filterPrices(event) {
+    event.preventDefault();
+
+    if (priceFilter.prices[0] > priceFilter.prices[1]) {
+        alert('El precio mínimo no puede ser mayor que el precio máximo');
+        return;
+    }
+
     priceFilter.transform((data) => {
         return {
             ...data,
@@ -49,37 +66,50 @@ const filterPrices = () => {
         }
     }).get('products', {
         preserveState: true,
+        preserveScroll: true, // To preserve the scroll position
         replace: true
-    })
+    }).catch(error => {
+        console.error('Error fetching products:', error);
+    });
 }
 
-// Filtrar por marcas
-const selectedBrands = ref([]);
+function updateFilterProducts(event) {
+    if (event) {
+        event.preventDefault();
+    }
+    try {
+        Inertia.visit('/products', {
+            method: 'get',
+            data: {
+                brands: selectedBrands.value,
+                categories: selectedCategories.value
+            },
+            preserveState: true,
+            preserveScroll: true,
+            replace: true,
+            onSuccess: (page) => {
+                console.log('Products updated successfully:', page);
+            },
+            onError: (error) => {
+                console.error('Error updating products:', error);
+            }
+        });
+    } catch (error) {
+        console.error('Caught error:', error);
+    }
+}
 
-watch(selectedBrands, () => {
-    updateFilterProducts()
-})
-
-// Filtrar por categorías
-const selectedCategories = ref([]);
-
-watch(selectedCategories, () => {
-    updateFilterProducts()
-})
-
-function updateFilterProducts() {
-    router.get('products', {
-        brands: selectedBrands.value,
-        categories: selectedCategories.value
-    }, {
-        preserveState: true,
-        replace: true
-    })
+function clearFilters() {
+    selectedBrands.value = [];
+    selectedCategories.value = [];
+    priceFilter.prices = [0, 1000];
+    updateFilterProducts();
 }
 </script>
 
+
 <template>
-    <div class="bg-white">
+    <div class="bg-white pt-20">
         <div>
             <!-- Mobile filter dialog -->
             <TransitionRoot as="template" :show="mobileFiltersOpen">
@@ -114,7 +144,7 @@ function updateFilterProducts() {
                                     <ul role="list" class="px-2 py-3 font-medium text-gray-900">
                                         <li v-for="category in categories" :key="category.id">
                                             <div class="flex items-center">
-                                                <input :id="`filter-mobile-category-${category.id}`" :value="category.id" type="checkbox" v-model="selectedCategories"
+                                                <input :id="`filter-mobile-category-${category.id}`" :value="category.id" type="checkbox" v-model="selectedCategories" @change="updateFilterProducts"
                                                     class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
                                                 <label :for="`filter-mobile-category-${category.id}`"
                                                     class="ml-3 min-w-0 flex-1 text-gray-500">{{ category.name }}</label>
@@ -137,7 +167,7 @@ function updateFilterProducts() {
                                             <div class="space-y-6">
                                                 <div v-for="brand in brands" :key="brand.id" class="flex items-center">
                                                     <input :id="`filter-mobile-brand-${brand.id}`" :value="brand.id" type="checkbox" v-model="selectedBrands"
-                                                        class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
+                                                        class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" @change="updateFilterProducts" />
                                                     <label :for="`filter-mobile-brand-${brand.id}`" class="ml-3 min-w-0 flex-1 text-gray-500">{{
                                                         brand.name }}</label>
                                                 </div>
@@ -177,7 +207,7 @@ function updateFilterProducts() {
                                                             placeholder="Max Price"
                                                             class="block w-full rounded-lg border border-gray-300 bg-gray-90 p-2.5 text-sm text-gray-900">
                                                     </div>
-                                                    <SecondaryButton @click="filterPrices()" class="self-end">OK</SecondaryButton>
+                                                    <SecondaryButton @click="filterPrices" class="self-end">OK</SecondaryButton>
                                                 </div>
                                             </div>
                                         </DisclosurePanel>
@@ -192,6 +222,8 @@ function updateFilterProducts() {
             <main class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-1">
                 <div class="flex items-baseline justify-between border-b border-gray-200 py-6">
                     <h1 class="text-4xl font-bold tracking-tight text-gray-900">Listado de Productos</h1>
+
+                    
 
                     <div class="flex items-center">
                         <Menu as="div" class="relative inline-block text-left">
@@ -235,7 +267,7 @@ function updateFilterProducts() {
                         </button>
                     </div>
                 </div>
-
+                
                 <section aria-labelledby="products-heading" class="pb-24 pt-6">
                     <h2 id="products-heading" class="sr-only">Products</h2>
 
@@ -281,7 +313,7 @@ function updateFilterProducts() {
                                 <DisclosurePanel class="pt-6">
                                     <div class="space-y-4">   
                                         <div v-for="brand in brands" :key="brand.id" class="flex items-center">  
-                                            <input :id="`filter-${brand.id}`" :value="brand.id" type="checkbox" v-model="selectedBrands"
+                                            <input :id="`filter-${brand.id}`" :value="brand.id" type="checkbox" v-model="selectedBrands" @change="updateFilterProducts"
                                                 class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
                                             <label :for="`filter-${brand.id}`" class="ml-3 text-sm text-gray-600">{{
                                                 brand.name }}</label>
@@ -305,7 +337,7 @@ function updateFilterProducts() {
                                 <DisclosurePanel class="pt-6">
                                     <div class="space-y-4">   
                                         <div v-for="category in categories" :key="category.id" class="flex items-center">  
-                                            <input :id="`filter-${category.id}`" :value="category.id" type="checkbox" v-model="selectedCategories"
+                                            <input :id="`filter-${category.id}`" :value="category.id" type="checkbox" v-model="selectedCategories" @change="updateFilterProducts"
                                                 class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
                                             <label :for="`filter-${category.id}`" class="ml-3 text-sm text-gray-600">{{
                                                 category.name }}</label>
@@ -324,6 +356,10 @@ function updateFilterProducts() {
                                         </div>
                                     </div>
                                 </Disclosure>
+
+                                <button type="button" @click="clearFilters" class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                Clear Filters
+                            </button>
                         </form>
 
                         <!-- Product grid -->

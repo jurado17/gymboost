@@ -43,19 +43,24 @@ const handleOpenDialog = (product) => {
     open.value = true;
 }
 
+const originalPrice = () => {
+    if (selectedWeight.value) {
+        return (Number(selectedProduct.value.price) * (selectedWeight.value.weight_g / 1000)).toFixed(2);
+    }
 
+}
 const calculatedPrice = () => {
 
     if (selectedProduct.value.promotion_id == null) {
         if (selectedWeight.value) {
-        return (Number(selectedProduct.value.price) * (selectedWeight.value.weight_g / 1000)).toFixed(2);
-    }
-    return parseFloat(selectedProduct.value.price).toFixed(2);
+            return (Number(selectedProduct.value.price) * (selectedWeight.value.weight_g / 1000)).toFixed(2);
+        }
+        return parseFloat(selectedProduct.value.price).toFixed(2);
     } else {
         let discountPrice = Number(selectedProduct.value.price) - (Number(selectedProduct.value.price) * selectedProduct.value.promotion.porcentual_discount);
 
         if (selectedWeight.value) {
-            
+
             return (Number(discountPrice) * (selectedWeight.value.weight_g / 1000)).toFixed(2);
         }
         return discountPrice.toFixed(2);
@@ -113,14 +118,14 @@ const addToCart = (product, weight, flavour, quantity, price) => {
 
         <CategoryCard></CategoryCard>
 
-    
+
         <div class="bg-white">
             <section class="bg-white dark:bg-gray-900">
                 <div class=" px-1 mx-auto max-w-screen-xl">
                     <div class="mx-auto max-w-screen-md text-center mb-8 lg:mb-12">
                         <p class="my-24 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
                             Productos Recomendados</p>
-                        
+
                     </div>
 
                     <div class="lg:grid  lg:grid-cols-4 sm:gap-6 xl:gap-10 lg:space-y-0">
@@ -131,7 +136,7 @@ const addToCart = (product, weight, flavour, quantity, price) => {
                             <div
                                 class="aspect-h-1 aspect-w-1 w-full overflow-hidden lg:aspect-none group-hover:opacity-75 lg:h-72">
                                 <img v-if="product.product_images.length > 0"
-                                :src="`/storage/${product.product_images[0].image}`"  :alt="product.imageAlt"
+                                    :src="`/${product.product_images[0].image}`" :alt="product.imageAlt"
                                     class=" object-cover object-center h-60 w-auto" />
 
                                 <img v-else
@@ -142,8 +147,12 @@ const addToCart = (product, weight, flavour, quantity, price) => {
                             <p class="font-light text-gray-500 sm:text-lg dark:text-gray-400">{{ product.brand.name }}
                             </p>
                             <div class="flex justify-center items-baseline my-4">
-                                <span v-if="product.promotion_id !== null" class="mr-2 text-xl font-extrabold text-red-500">{{ (Number(product.price) - (Number(product.price) * product.promotion.porcentual_discount)).toFixed(2) }} €</span>
-                                <span v-if="product.promotion_id !== null" class="text-lg font-light line-through text-gray-500">{{ product.price }} €</span>
+                                <span v-if="product.promotion_id !== null"
+                                    class="mr-2 text-xl font-extrabold text-red-500">{{ (Number(product.price) -
+                                        (Number(product.price) * product.promotion.porcentual_discount)).toFixed(2) }}
+                                    €</span>
+                                <span v-if="product.promotion_id !== null"
+                                    class="text-lg font-light line-through text-gray-500">{{ product.price }} €</span>
                                 <span v-else class="mr-2 text-xl font-extrabold">{{ product.price }} €</span>
                             </div>
                             </Link>
@@ -159,7 +168,8 @@ const addToCart = (product, weight, flavour, quantity, price) => {
                         </div>
                     </div>
                     <div class="flex justify-center items-center text-center pb-10">
-                        <Link :href="route('products.index')" class="p-2 border-2 hover:bg-cyan-900 hover:text-white transition">Ver todos</Link>
+                        <Link :href="route('products.index')"
+                            class="p-2 border-2 hover:bg-cyan-900 hover:text-white transition">Ver todos</Link>
                     </div>
                 </div>
             </section>
@@ -215,7 +225,7 @@ const addToCart = (product, weight, flavour, quantity, price) => {
                                                     <div v-else class="flex items-center">
                                                         <p class="text-2xl text-red-500 mr-2">{{ productPrice }} €</p>
                                                         <p class="text-lg text-gray-500 line-through">{{
-                                                            calculatedPrice() }} €</p>
+                                                            originalPrice() }} €</p>
                                                     </div>
                                                 </div>
                                             </section>
