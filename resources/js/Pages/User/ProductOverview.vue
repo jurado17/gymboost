@@ -97,7 +97,7 @@ const totalStock = computed(() => {
                 <div class="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-16">
                     <div class="shrink-0 max-w-md lg:max-w-lg mx-auto">
                         <img v-if="props.product.product_images.length > 0" class="w-full rounded dark:hidden"
-                            :src="`/${props.product.product_images[0].image}`" alt="Imagen" />
+                            :src="`/storage/${props.product.product_images[0].image}`" alt="Imagen" />
                         <img v-else class="w-full hidden dark:block"
                             src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front-dark.svg"
                             alt="Imagen no encontrada" />

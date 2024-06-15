@@ -13,7 +13,7 @@ const props = defineProps({
             <div v-for="product in products" :key="product.id" class="group relative">
                 <Link :href="route('product.overview',[product.slug])">
                     <div class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
-                        <img :src="`/${product.product_images[0].image}`" class="h-full w-full object-cover object-center lg:h-full lg:w-full" />
+                        <img :src="`/storage//${product.product_images[0].image}`" class="h-full w-full object-cover object-center lg:h-full lg:w-full" />
                     </div>
                     <div class="mt-4 flex justify-between">
                         <div>

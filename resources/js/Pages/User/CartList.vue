@@ -76,7 +76,7 @@ const applyCoupon = async () => {
                                     <a href="#" class="shrink-0 md:order-1">
                                         <img v-if="cartItem.product.product_images && cartItem.product.product_images.length > 0"
                                             class="h-32 w-auto dark:hidden"
-                                            :src="`/${cartItem.product.product_images[0].image}`" alt="product image" />
+                                            :src="`/storage/${cartItem.product.product_images[0].image}`" alt="product image" />
                                         <img v-else
                                             src="https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg"
                                             alt="No Image Available"

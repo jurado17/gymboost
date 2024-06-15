@@ -26,7 +26,7 @@ const ogPrice = totalPrice-tax;
                                 <div class="flex items-center gap-6">
                                     <a href="#" class="h-20 w-20 shrink-0">
                                         <img class="h-full w-full dark:hidden"
-                                            :src="`/${item.product.product_images[0].image}`"
+                                            :src="`/storage/${item.product.product_images[0].image}`"
                                             alt="imac image" />
                                     </a>
 

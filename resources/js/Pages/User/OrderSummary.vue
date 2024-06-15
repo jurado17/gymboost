@@ -46,6 +46,7 @@ const show = () => {
                                 <tr v-for="item in cartData" :key="item.id">
                                     <td class="whitespace-nowrap py-4 md:w-[384px]">
                                         <div class="flex items-center gap-4">
+                                            
                                             <a v-if="item.product" href="#" class="hover:underline">{{ item.product.name }}</a>
                                             <span v-else>Nombre de Producto no disponible</span>
                                         </div>

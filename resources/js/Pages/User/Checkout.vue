@@ -138,7 +138,7 @@ onMounted(() => {
 
                         <div v-if="showAddressSection" class="mt-4 space-y-4">
                             <div v-for="address in userAddress" :key="address.id"
-                                :class="{ 'p-4 rounded-xl cursor-pointer border-2': true, 'border-cyan-500 bg-cyan-100': selectedAddress === address, 'border-transparent': selectedAddress !== address }"
+                                :class="{ 'p-4 rounded-xl cursor-pointer border-2': true, 'border-cyan-900 bg-cyan-100': selectedAddress === address, 'border-transparent': selectedAddress !== address }"
                                 @click="selectedAddress = address">
                                 <input type="radio" :value="address" v-model="selectedAddress" class="hidden" />
                                 <label class="cursor-pointer">
@@ -253,14 +253,3 @@ onMounted(() => {
         </form>
     </section>
 </template>
-
-<style scoped>
-/* Agrega cualquier estilo personalizado aquí */
-.border-cyan-500 {
-    border-color: #3b82f6;
-}
-
-.bg-cyan-100 {
-    background-color: #dbeafe;
-}
-</style>

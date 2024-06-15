@@ -28,7 +28,7 @@ onMounted(() => {
                     <a href="#" class="overflow-hidden rounded">
 
                         <img class="mx-auto h-44 w-44 dark:block"
-                        :src="`/${product.product_images[0].image}`"
+                        :src="`/storage/${product.product_images[0].image}`"
                             alt="product image" /> 
                     </a>
                     <div>
