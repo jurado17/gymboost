@@ -14,6 +14,7 @@ class StockProduct extends Model
         'weight_id',
         'flavour_id',
         'quantity',
+        'isStocked'
     ];
 
     public function product()
