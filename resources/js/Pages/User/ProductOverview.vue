@@ -2,6 +2,7 @@
 import UserLayout from './Layouts/UserLayout.vue';
 import { router } from '@inertiajs/vue3';
 import { ref, computed, watch } from 'vue';
+import Swal from 'sweetalert2';
 import {
     RadioGroup,
     RadioGroupLabel,
@@ -44,6 +45,17 @@ const totalPrice = computed(() => {
 });
 
 const addToCart = (product, weight, flavour, quantity, price) => {
+    // Check stock before making the request
+    const stock = props.stockProduct.find(stock => stock.weight_id === weight.id && stock.flavour_id === flavour);
+    if (!stock || stock.quantity < quantity) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No hay suficiente stock disponible.'
+        });
+        return;
+    }
+
     router.post(route('cart.store', {
         product: product.id,
         weight: weight.id,
@@ -73,12 +85,18 @@ const availableQuantities = computed(() => {
     if (selectedWeight.value && selectedFlavour.value) {
         const stock = props.stockProduct.find(stock => stock.weight_id === selectedWeight.value.id && stock.flavour_id === selectedFlavour.value);
         if (stock) {
-            const maxQuantity = Math.min(stock.quantity, 10);
-            return Array.from({ length: maxQuantity }, (_, i) => i + 1);
+            if (stock.quantity > 20) {
+                const maxQuantity = Math.min(stock.quantity, 10);
+                return Array.from({ length: maxQuantity }, (_, i) => i + 1);
+            } else {
+                // Si la cantidad es menor a 20, no hay stock disponible
+                return [];
+            }
         }
     }
     return [];
 });
+
 
 const totalStock = computed(() => {
     if (selectedWeight.value && selectedFlavour.value) {
@@ -168,7 +186,7 @@ const totalStock = computed(() => {
                                         quantity }}</option>
                                 </select>
 
-                                <span v-if="totalStock < 30" class="text-red-500 mt-3">Quedan pocas unidades</span>
+                                <span v-if="totalStock < 40" class="text-red-500 mt-3">Quedan pocas unidades</span>
                             </div>
                         </div>
                         <div id="select_quantity"></div>

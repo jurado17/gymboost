@@ -107,6 +107,7 @@ const addToCart = (product, weight, flavour, quantity, price) => {
             open.value = false
         }
     });
+    open.value = false
 }
 </script>
 
@@ -266,7 +267,7 @@ const addToCart = (product, weight, flavour, quantity, price) => {
                                                         <select v-model="selectedFlavour" name="select-flavour"
                                                             id="select-flavour" class="rounded">
                                                             <option v-for="flavour in flavours" :key="flavour.id"
-                                                                v-bind:hidden="!stockProducts.some(stock => stock.flavour_id === flavour.id && stock.weight_id === selectedWeight?.id)"
+                                                                v-bind:hidden="!stockProducts.some(stock => stock.flavour_id === flavour.id && stock.weight_id === selectedWeight.id && selectedProduct.id === stock.product_id )"
                                                                 :value="flavour.id">{{ flavour.name }}</option>
                                                         </select>
                                                     </div>
@@ -301,6 +302,9 @@ const addToCart = (product, weight, flavour, quantity, price) => {
             </Dialog>
         </TransitionRoot>
 
+        <div class="flex justify-center text-center p-2 bg-cyan-950 text-white text-sm">
+            <h1 class="hover:underline">¡SEMANA BOOST! <br> 50% de Descuento en nuestra selección de productos</h1>
+        </div>
 
         <!--START HERO SECTION-->
         <Hero></Hero>

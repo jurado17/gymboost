@@ -23,6 +23,10 @@ const props = defineProps({
     },
 });
 
+const productImage = computed(() => {
+    return props.product?.product_images?.[0]?.image || 'default-image.jpg';
+});
+
 const id = ref('');
 const product_id = ref('');
 const flavour_id = ref('');
@@ -55,7 +59,6 @@ const resetFormData = () => {
 }
 
 const openAddModal = () => {
-    console.log(props.product);
     resetFormData();
     isAddProduct.value = true;
     dialogVisible.value = true;
@@ -64,7 +67,7 @@ const openAddModal = () => {
 
 const addProduct = async () => {
     const data = {
-        product_id: props.product.id,
+        product_id: props.product.id || '',
         flavour_id: flavour_id.value,
         weight_id: weight_id.value,
         quantity: quantity.value,
@@ -197,10 +200,12 @@ const resetFilters = () => {
                     <div class="bg-white rounded-lg shadow p-6">
                         <div class="flex flex-wrap -mx-2">
                             <div class="px-2 inline-flex justify-center items-center space-x-6">
-                                <img :src="`/storage/${productImage}`" width="80" height="80" class="rounded" alt="">
-                                <label class="block text-lg font-medium text-gray-700">{{ props.product?.name || 'Nombre no disponible' }}</label>
-                                <label class="block text-lg font-medium text-gray-700">{{ props.product?.brand?.name ||
-                                    'Marca no disponible' }}</label>
+                                <img :src="`/storage/${props.product.product_images[0].image}`" width="80" height="80"
+                                    class="rounded" alt="">
+                                <label class="block text-lg font-medium text-gray-700">{{ props.product?.name
+                                    || '' }}</label>
+                                <label class="block text-lg font-medium text-gray-700">{{
+                                    props.product?.brand.name || '' }}</label>
                             </div>
                         </div>
                     </div>
@@ -340,9 +345,8 @@ const resetFilters = () => {
                                                 <th scope="col" class="px-4 py-3">Peso</th>
                                                 <th scope="col" class="px-4 py-3">Stock</th>
                                                 <th scope="col" class="px-4 py-3">En Stock</th>
-                                                <th scope="col" class="px-4 py-3">Sales/Month</th>
-                                                <th scope="col" class="px-4 py-3">En Stock</th>
-                                                <th scope="col" class="px-4 py-3">Last Update</th>
+                                                <th scope="col" class="px-4 py-3">Creado</th>
+                                                <th scope="col" class="px-4 py-3">Última Modificación</th>
                                                 <th scope="col" class="px-4 py-3">Accciones</th>
                                             </tr>
                                         </thead>
@@ -351,7 +355,7 @@ const resetFilters = () => {
                                                 v-if="Array.isArray(filteredProducts) && filteredProducts.length > 0">
                                                 <tr v-for="product in filteredProducts" :key="product.id"
                                                     class="border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
-
+                                                    
                                                     <th scope="row"
                                                         class="flex items-center px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                         {{ product.flavour.name }}
@@ -380,20 +384,11 @@ const resetFilters = () => {
                                                             class="bg-red-100 text-red-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">Sin
                                                             Stock</span>
                                                     </td>
-                                                    <td
-                                                        class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                        0.47
-                                                    </td>
+                                                    
                                                     <td
                                                         class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                         <div class="flex items-center">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                                                fill="currentColor" class="w-5 h-5 mr-2 text-gray-400"
-                                                                aria-hidden="true">
-                                                                <path
-                                                                    d="M2.25 2.25a.75.75 0 000 1.5h1.386c.17 0 .318.114.362.278l2.558 9.592a3.752 3.752 0 00-2.806 3.63c0 .414.336.75.75.75h15.75a.75.75 0 000-1.5H5.378A2.25 2.25 0 017.5 15h11.218a.75.75 0 00.674-.421 60.358 60.358 0 002.96-7.228.75.75 0 00-.525-.965A60.864 60.864 0 005.68 4.509l-.232-.867A1.875 1.875 0 003.636 2.25H2.25zM3.75 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM16.5 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z" />
-                                                            </svg>
-                                                            1.6M
+                                                            {{ new Date(product.created_at).toLocaleDateString() }}
                                                         </div>
                                                     </td>
                                                     <td
@@ -434,7 +429,7 @@ const resetFilters = () => {
                                     </table>
 
                                 </div>
-
+                            
                             </div>
                         </div>
                     </section>
@@ -452,7 +447,7 @@ const resetFilters = () => {
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                         <option v-for="weight in weights" :key="weight.id" :value="weight.id">{{
                                             weight.name
-                                            }}</option>
+                                        }}</option>
                                     </select>
                                 </div>
 
@@ -463,7 +458,7 @@ const resetFilters = () => {
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                         <option v-for="flavour in flavours" :key="flavour.id" :value="flavour.id">{{
                                             flavour.name
-                                            }}</option>
+                                        }}</option>
                                     </select>
                                 </div>
 

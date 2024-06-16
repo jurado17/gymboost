@@ -17,7 +17,7 @@ class ProductOverviewController extends Controller
         
         $weights = Weight::get();
         $flavours = Flavour::get();
-        $stockProduct = StockProduct::where('product_id', $product->id)->with('product.product_images', 'weight', 'flavour')->get();
+        $stockProduct = StockProduct::where('product_id', $product->id)->where('isStocked',1)->with('product.product_images', 'weight', 'flavour')->get();
 
         // Check if the product has an active promotion and calculate the discount price
         $discountedPrice = null;

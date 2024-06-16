@@ -105,5 +105,16 @@ class ProductController extends Controller
         return response()->json($products);
     }
 
+    public function publishProduct($id)
+    {
+        $product = Product::findOrFail($id);
+        if ($product->published === 1) {
+            $product->published = 0;
+        } else {
+            $product->published = 1;
+        }
+        $product->update();
+        return redirect()->back()->with('success','Estado de publicacion cambiado');
+    }
     
 }

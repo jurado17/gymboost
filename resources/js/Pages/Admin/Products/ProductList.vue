@@ -199,6 +199,36 @@ const deleteProduct = (product, index) => {
     });
 }
 
+const publishProduct = (product, index) => {
+    Swal.fire({
+        title: 'Cambiar estado de publicacion?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        cancelButtonText: 'NO',
+        confirmButtonText: 'Si, cambiar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            try {
+                router.put('products/publish/' + product.id, {
+                    onSuccess: (page) => {
+                        deleteProduct(product, index);
+                        Swal.fire({
+                            toast: true,
+                            icon: 'success',
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            title: page.props.flash.success,
+                        })
+                    }
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    });
+}
 
 const CategoryColor = (categoryId) => {
     switch (categoryId) {
@@ -392,9 +422,9 @@ const resetFilters = () => {
                                 </td>
                                 <td class="px-4 py-3">{{ product.brand.name }}</td>
                                 <td class="px-4 py-3">
-                                    <button v-if="product.published == 1" type="button"
+                                    <button @click="publishProduct(product)" v-if="product.published == 1" type="button"
                                         class="px-3 py-2 text-xs font-medium text-center text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Publicado</button>
-                                    <button v-else type="button"
+                                    <button @click="publishProduct(product)" v-else type="button"
                                         class="px-3 py-2 text-xs font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">No
                                         Publicado</button>
                                 </td>
@@ -503,7 +533,7 @@ const resetFilters = () => {
             <!--Lista de imagenes por producto seleccionado-->
             <div class="flex flex-nowrap m-4 ">
                 <div v-for="(pimage, index) in product_images" :key="pimage.id" class="relative m-2">
-                    <img class="w-32 h-auto rounded" :src="`/${pimage.image}`" alt="">
+                    <img class="w-32 h-auto rounded" :src="`/storage/${pimage.image}`" alt="">
                     <span
                         class="absolute top-0 right-0 transform -translate-y-1/2 w-3.5 h-3.5 bg-red-400 border-2 border-white dark:border-gray-800 rounded-full cursor-default hover:cursor-pointer">
                         <span @click="deleteImage(pimage, index)"

@@ -21,6 +21,7 @@ return new class extends Migration
     $table->string('slug', 200);
     $table->string('description', 200);
     $table->decimal('price', 10, 2);
+    $table->boolean('published')->default(0);
     $table->foreignId('promotion_id')->nullable()->constrained('promotions');
     $table->foreignIdFor(User::class, 'created_by')->nullable();
     $table->foreignIdFor(User::class, 'updated_by')->nullable();

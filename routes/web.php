@@ -69,9 +69,17 @@ Route::get('/api/brands', function () {
 });
 
 Route::get('/api/products', function () {
-    return \App\Models\Product::with('promotion', 'product_images', 'stock_products', 'brand', 'category')->inRandomOrder()
+    return \App\Models\Product::with('promotion', 'product_images', 'stock_products.weight','stock_products.flavour', 'brand', 'category')->inRandomOrder()
     ->take(3)
     ->get();
+});
+
+Route::get('/api/weights', function() {
+    return \App\Models\Weight::all();
+});
+
+Route::get('/api/flavours', function() {
+    return \App\Models\Flavour::all();
 });
 
 Route::get('/api/products/search', [ProductController::class, 'search']);
@@ -112,6 +120,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
         Route::put('/update/{id}', [ProductController::class, 'update'])->name('admin.products.update');
         Route::delete('/delete/{id}', [ProductController::class, 'delete'])->name('admin.products.delete');
         Route::delete('/image/{id}', [ProductController::class, 'deleteImage'])->name('admin.product.image.delete');
+        Route::put('/publish/{id}', [ProductController::class, 'publishProduct'])->name('admin.publishProduct');
     });
 
     // Product Details Routes

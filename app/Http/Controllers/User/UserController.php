@@ -20,7 +20,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        $products = Product::with('brand', 'category', 'product_images', 'promotion')->limit(4)->get();
+        $products = Product::where('published',1)->with('brand', 'category', 'product_images', 'promotion')->limit(4)->get();
         $weights = Weight::get();
         $flavours = Flavour::get();
         $stockProducts = StockProduct::get();

@@ -15,7 +15,7 @@ class ProductDetailsController extends Controller
 {
     public function index($id)
     {   
-        $product = Product::where('id',$id)->with('product_images', 'brand', 'category')->first();
+        $product = Product::where('id', $id)->with('product_images','brand','category')->first();
         $stockProduct = StockProduct::where('product_id', $id)->with('product.product_images','product.brand', 'weight', 'flavour')->get();
         $weight = Weight::get();
         $flavours = Flavour::get();
@@ -40,18 +40,37 @@ class ProductDetailsController extends Controller
     }
 
     public function update(Request $request, $id)
-    {
-        $request->validate([
-            'product_id' => 'required',
-            'weight_id' => 'required',
-            'flavour_id' => 'required',
-            'quantity' => 'required|numeric',
-        ]);
+{
+    $request->validate([
+        'product_id' => 'required',
+        'weight_id' => 'required',
+        'flavour_id' => 'required',
+        'quantity' => 'required|numeric|max:999',
+    ]);
 
-        StockProduct::find($id)->update($request->all());
-
-        return redirect()->back()->with('success', 'Stock Product updated successfully');
+    // Encuentra el StockProduct
+    $stockProduct = StockProduct::find($id);
+    
+    if (!$stockProduct) {
+        return redirect()->back()->with('error', 'Stock Product not found');
     }
+
+    // Actualiza los campos del stock product
+    $stockProduct->update($request->all());
+
+    // Comprueba si el quantity es mayor que 20
+    if ($request->quantity > 20) {
+        $stockProduct->isStocked = true;
+    } else {
+        $stockProduct->isStocked = false;
+    }
+
+    // Guarda los cambios en isStocked
+    $stockProduct->save();
+
+    return redirect()->back()->with('success', 'Stock Product updated successfully');
+}
+
 
     public function delete($id)
     {

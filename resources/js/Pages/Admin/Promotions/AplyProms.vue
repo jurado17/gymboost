@@ -269,7 +269,7 @@ const deletePromotions = async () => {
                         </div>
                     </div>
                     <div class="overflow-x-auto">
-                        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 pb-12">
                             <thead
                                 class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
@@ -302,7 +302,7 @@ const deletePromotions = async () => {
                                     <th scope="row"
                                         class="inline-flex px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                         <img v-if="product.product_images.length > 0"
-                                            :src="`/${product.product_images[0].image}`" :alt="product.imageAlt"
+                                            :src="`/storage/${product.product_images[0].image}`" :alt="product.imageAlt"
                                             class="h-12 w-12 object-cover object-center" />
 
                                         <img v-else

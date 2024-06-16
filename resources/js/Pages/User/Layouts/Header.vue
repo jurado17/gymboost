@@ -68,8 +68,8 @@ onMounted(() => {
 
 <template>
 
-    <div class="flex justify-center p-2 bg-gray-400 text-white">
-        <h1>Envios gratuitos por compras menores de 24,99</h1>
+    <div class="flex justify-center p-1 bg-gray-400 text-white">
+        <h1 class="text-sm">Envios gratuitos por compras menores de 24,99</h1>
     </div>
 
     <div
@@ -85,7 +85,7 @@ onMounted(() => {
                 <!--Buscador de productos-->
                 <div>
                     <div class="flex md:order-2">
-                        <div class="relative hidden md:block">
+                        <div class="relative hidden lg:block">
                             <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                                 <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
@@ -104,8 +104,9 @@ onMounted(() => {
                                         class="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800">
                                         <Link :href="`/${result.slug}`"
                                             class="inline-flex justify-center items-center text-center px-6 text-gray-900">
-                                            <img  :src="`/${result.product_images[0].image}`" alt="imagen" class="mr-5 w-14 h-14">
-                                            {{ result.name }}</Link>
+                                        <img :src="`/storage/${result.product_images[0].image}`" alt="imagen"
+                                            class="mr-5 w-14 h-14">
+                                        {{ result.name }}</Link>
                                     </li>
                                 </ul>
                             </div>
@@ -242,8 +243,8 @@ onMounted(() => {
             </div>
 
         </nav>
-        <nav class="bg-cyan-900  dark:bg-gray-700 hidden lg:flex">
-            <div class="max-w-screen-xl px-4 py-4 mx-auto">
+        <nav class="bg-cyan-950  dark:bg-gray-700 hidden lg:flex">
+            <div class="max-w-screen-xl px-4 py-2 mx-auto">
                 <div class="flex items-center">
                     <ul class="flex flex-row font-medium mt-0 space-x-8 rtl:space-x-reverse text-md ">
                         <li v-for="category in categories" :key="category.id">
@@ -300,6 +301,38 @@ onMounted(() => {
                 </button>
             </div>
             <ul class="p-4 space-y-2 text-gray-900">
+
+                <div>
+                    <div class="flex md:order-2">
+                        <div class="relative hidden md:block">
+                            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                                </svg>
+                                <span class="sr-only">Search icon</span>
+                            </div>
+                            <input type="text" id="search-navbar" v-model="searchQuery" @input="searchProducts"
+                                class="block w-full p-2 px-56 ps-10 text-sm border border-gray-300 rounded-sm bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 text-gray-900 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                placeholder="Search...">
+                            <div v-if="searchResults.length" v-bind:hidden="searchResults.value === ''"
+                                class="absolute z-10 w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg mt-1">
+                                <ul class="py-1 max-h-80 overflow-y-auto">
+                                    <li v-for="result in searchResults" :key="result.id"
+                                        class="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800">
+                                        <Link :href="`/${result.slug}`"
+                                            class="inline-flex justify-center items-center text-center px-6 text-gray-900">
+                                        <img :src="`/storage/${result.product_images[0].image}`" alt="imagen"
+                                            class="mr-5 w-14 h-14">
+                                        {{ result.name }}</Link>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <li>
                     <Link :href="route('user.home')"
                         class="block py-2 px-3 text-sm rounded-md text-white bg-blue-500 hover:bg-blue-600">
@@ -355,10 +388,6 @@ onMounted(() => {
         <div @click="closeSidebar" :class="{ 'block': sidebarOpen, 'hidden': !sidebarOpen }"
             class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden">
         </div>
-    </div>
-
-    <div class="flex justify-center text-center p-2 bg-cyan-500 text-white text-sm">
-        <h1 class="hover:underline">¡SEMANA BOOST! <br> 50% de Descuento en nuestra selección de productos</h1>
     </div>
 
     <div class="flex justify-center text-center p-2 bg-teal-500 text-white text-sm">
