@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use App\Helper\Cart;
 
 class AdminAuthController extends Controller
 {
@@ -21,12 +23,14 @@ class AdminAuthController extends Controller
             'password' => 'required|min:6',
         ], [
             'email.required' => 'El campo de correo electrónico es obligatorio.',
-            'email.email' => 'Debe proporcionar una dirección de correo electrónico válida.',
             'password.required' => 'El campo de contraseña es obligatorio.',
             'password.min' => 'La contraseña debe tener al menos 6 caracteres.',
         ]);
 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+            // Fusionar el carrito de invitado con el carrito del usuario autenticado
+            Cart::saveCookieCartItems();
+
             return redirect()->route('user.home');
         }
 

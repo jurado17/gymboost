@@ -31,10 +31,9 @@ class CheckoutController extends Controller
                 'total' => $total
             ]);
         } else {
-            return redirect()->route('register');
+            return redirect()->route('admin.login');
         }
     }
-
 
     private function createOrderItems($user, $order, $total)
     {

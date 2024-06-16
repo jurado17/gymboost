@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
@@ -12,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Helper\Cart;
 
 class RegisteredUserController extends Controller
 {
@@ -51,6 +51,9 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
 
         Auth::login($user);
+
+        // Fusionar el carrito de invitado con el carrito del usuario autenticado
+        Cart::saveCookieCartItems();
 
         return redirect(route('user.home', absolute: false));
     }

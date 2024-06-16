@@ -39,15 +39,23 @@ class CartController extends Controller
             ]);
         } else {
             list($products, $cartItems) = Cart::getProductsAndCartItems();
-
+    
             $cartItems = $products->map(function ($product) use ($cartItems) {
+                $stockProduct = StockProduct::where('product_id', $product->id)
+                    ->where('weight_id', $cartItems[$product->id]['weight_id'])
+                    ->where('flavour_id', $cartItems[$product->id]['flavour_id'])
+                    ->with(['weight', 'flavour'])
+                    ->first();
+    
                 return [
                     'product' => $product,
                     'quantity' => $cartItems[$product->id]['quantity'],
-                    'final_price' => $product->price // Assuming final_price is the product price for guests
+                    'final_price' => $product->price,
+                    'weight' => $stockProduct->weight,
+                    'flavour' => $stockProduct->flavour
                 ];
             });
-            
+    
             return Inertia::render('User/CartList', ['cartItems' => $cartItems]);
         }
     }
@@ -83,7 +91,6 @@ public function store(Request $request, Product $product, $weight, $flavour, $qu
     DB::beginTransaction();
 
     try {
-        // Lock the stock record to prevent concurrent modifications
         $stockProduct = StockProduct::where([
             'product_id' => $product->id,
             'weight_id' => $weight,
@@ -95,7 +102,6 @@ public function store(Request $request, Product $product, $weight, $flavour, $qu
             return redirect()->back()->withErrors(['error' => 'No hay suficiente stock disponible.']);
         }
 
-        // Reduce stock quantity
         $stockProduct->decrement('quantity', $quantity);
         if ($stockProduct->quantity < 20) {
             $stockProduct->isStocked = false;
@@ -196,7 +202,7 @@ public function update(Request $request, Product $product, Weight $weight, Flavo
             $quantityDifference = $quantity - $oldQuantity;
 
             // Verificar si hay suficiente stock para la diferencia de cantidad
-            if ($stockProduct->quantity - $quantityDifference <= 20) {
+            if ($stockProduct->quantity - $quantityDifference < 20) {
                 return redirect()->back()->withErrors(['error' => 'Insufficient stock to increase the quantity']);
             }
 
@@ -216,6 +222,7 @@ public function update(Request $request, Product $product, Weight $weight, Flavo
     } else {
         $cartItems = Cart::getCookieCartItems();
         $found = false;
+
         foreach ($cartItems as &$item) {
             if ($item['product_id'] === $product->id && $item['weight_id'] == $weight->id && $item['flavour_id'] == $flavour->id) {
                 $oldQuantity = $item['quantity'];
@@ -239,6 +246,7 @@ public function update(Request $request, Product $product, Weight $weight, Flavo
                 break;
             }
         }
+
         if ($found) {
             Cart::setCookieCartItems($cartItems);
         } else {

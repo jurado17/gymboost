@@ -2,7 +2,6 @@
 import Checkbox from '@/Components/Checkbox.vue';
 import InputError from '@/Components/InputError.vue';
 import {Link, useForm } from '@inertiajs/vue3';
-import Footer from '@/Pages/User/Layouts/Footer.vue';
 
 defineProps({
     canResetPassword: {

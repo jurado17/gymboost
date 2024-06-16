@@ -95,8 +95,9 @@ Route::middleware('auth')->prefix('order-summary')->group(function () {
 });
 
 // Checkout Routes
+Route::get('/{total}', [CheckoutController::class, 'index'])->prefix('checkout')->name('checkout.index');
 Route::middleware('auth')->prefix('checkout')->group(function () {
-    Route::get('/{total}', [CheckoutController::class, 'index'])->name('checkout.index');
+   
     Route::post('/success', [CheckoutController::class, 'success'])->name('checkout.success');
     Route::get('/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
     Route::post('/newAddress',[CheckoutController::class, 'saveNewAddress'])->name('checkout.newAddress');
