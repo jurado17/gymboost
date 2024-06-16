@@ -18,7 +18,7 @@ class ProductsTableSeeder extends Seeder
                 'slug' => $faker->slug,
                 'description' => $faker->sentence,
                 'price' => $faker->randomFloat(2, 1, 100),
-                'published' => $faker->randomNumber(0,1),
+                'published' => $faker->randomFloat(0,1),
                 'promotion_id' => $faker->optional()->randomElement($promotionIds), // ID de una promoción existente o null
                 'created_by' => $faker->optional()->numberBetween(1, 10),
                 'updated_by' => $faker->optional()->numberBetween(1, 10),
