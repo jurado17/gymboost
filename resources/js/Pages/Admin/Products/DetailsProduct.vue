@@ -200,8 +200,12 @@ const resetFilters = () => {
                     <div class="bg-white rounded-lg shadow p-6">
                         <div class="flex flex-wrap -mx-2">
                             <div class="px-2 inline-flex justify-center items-center space-x-6">
-                                <img :src="`/storage/${props.product.product_images[0].image}`" width="80" height="80"
+                                <img v-if="props.product.product_images.length > 0" :src="`/storage/${props.product.product_images[0].image}`" width="80" height="80"
                                     class="rounded" alt="">
+                                
+                                <img v-else
+                                    src="https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg"
+                                    :alt="product.imageAlt" class="h-12 w-12 object-cover object-center" />
                                 <label class="block text-lg font-medium text-gray-700">{{ props.product?.name
                                     || '' }}</label>
                                 <label class="block text-lg font-medium text-gray-700">{{
