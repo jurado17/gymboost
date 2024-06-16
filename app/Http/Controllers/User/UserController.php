@@ -33,6 +33,7 @@ class UserController extends Controller
             'weights' => $weights,
             'flavours' => $flavours,
             'stockProducts' => $stockProducts,
+            'promotions' => $promotions,
             'canLogin' => app('router')->has('login'),
             'canRegister' => app('router')->has('register'),
             'laravelVersion' => Application::VERSION,
