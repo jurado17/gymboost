@@ -7,6 +7,7 @@ use App\Models\Flavour;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
+use App\Models\Promotion;
 use App\Models\StockProduct;
 use App\Models\UserAddress;
 use App\Models\Weight;
@@ -24,6 +25,8 @@ class UserController extends Controller
         $weights = Weight::get();
         $flavours = Flavour::get();
         $stockProducts = StockProduct::get();
+
+        $promotions = Promotion::where('type','carrito')->first();
 
         return Inertia::render('User/Index', [
             'products' => $products,
