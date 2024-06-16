@@ -218,7 +218,8 @@ const addToCart = (product, weight, flavour, quantity, price) => {
                                         class="grid w-full grid-cols-1 items-start gap-x-6 gap-y-8 sm:grid-cols-12 lg:gap-x-8 ">
                                         <div
                                             class="aspect-h-3 aspect-w-2 overflow-hidden rounded-lg bg-gray-100 sm:col-span-4 lg:col-span-5">
-                                            <img :src="selectedProduct.product_images[0]?.image || 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg'"
+                                            `/storage/${selectedProduct.product_images[0].image}`
+                                            <img :src="`/storage/${selectedProduct.product_images[0].image}` || 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg'"
                                                 :alt="selectedProduct.imageAlt" class="object-cover object-center" />
                                         </div>
                                         <div class="sm:col-span-8 lg:col-span-7">
