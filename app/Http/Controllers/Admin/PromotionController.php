@@ -50,4 +50,16 @@ class PromotionController extends Controller
         return redirect()->route('admin.promotions.index')->with('success', 'Promoción Eliminada con exito');
     }
 
+    public function activePromotion($id){
+
+        $promotion = Promotion::findOrFail($id);
+        if ($promotion->isActive === 1) {
+            $promotion->isActive = 0;
+        } else {
+            $promotion->isActive = 1;
+        }
+        $promotion->update();
+        return redirect()->back()->with('success','Estado de la promocion cambiado');
+    }
+
 }

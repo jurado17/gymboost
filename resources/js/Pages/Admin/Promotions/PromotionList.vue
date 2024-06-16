@@ -150,6 +150,40 @@ const deletePromotion = (id, index) => {
     });
 }
 
+
+
+const activatePromotion = (prom, index) => {
+    Swal.fire({
+        title: 'Cambiar estado de la promocion?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        cancelButtonText: 'NO',
+        confirmButtonText: 'Si, cambiar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            try {
+                router.put(route('admin.promotions.activate', prom.id), {
+                    onSuccess: (page) => {
+                        activatePromotion(prom, index);
+                        Swal.fire({
+                            toast: true,
+                            icon: 'success',
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            title: page.props.flash.success,
+                        })
+                    }
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    });
+}
+
+
 const searchValue = ref('');
 const selectedType = ref([]);
 const selectedIsActive = ref([]);
@@ -326,13 +360,13 @@ const TypeColor = (categoryId) => {
                                 <td class="px-4 py-3">{{ promotion.porcentual_discount }}</td>
                                 <td class="px-4 py-3">{{ promotion.active_until }}</td>
                                 <td class="px-4 py-3">
-                                    <button v-if="promotion.isActive == 1" type="button"
+                                    <button v-if="promotion.isActive == 1" type="button" @click="activatePromotion(promotion)"
                                         class="px-3 py-2 text-xs font-medium text-center text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Activo</button>
-                                    <button v-else type="button"
+                                    <button v-else type="button" @click="activatePromotion(promotion)"
                                         class="px-3 py-2 text-xs font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">Inactivo</button>
                                 </td>
 
-                                <td class="px-4 py-3 flex items-center justify-end">
+                                <td class="px-4 py-3 flex items-center justify-end"> 
                                     <button id="dropdown-button-{{ promotion.id }}" :data-dropdown-toggle="promotion.id"
                                         class="inline-flex items-center p-0.5 text-sm font-medium text-center text-gray-500 hover:text-gray-800 rounded-lg focus:outline-none dark:text-gray-400 dark:hover:text-gray-100"
                                         type="button">

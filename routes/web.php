@@ -46,7 +46,7 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // Add to Cart Routes
-Route::middleware('auth')->prefix('cart')->controller(CartController::class)->group(function () {
+Route::prefix('cart')->controller(CartController::class)->group(function () {
     Route::get('view', 'view')->name('cart.view');
     Route::post('store/{product}/{weight}/{flavour}/{quantity}/{price}', 'store')->name('cart.store');
     Route::patch('update/{product}/{weight}/{flavour}', 'update')->name('cart.update');
@@ -169,6 +169,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
         Route::post('/', [PromotionController::class, 'store'])->name('admin.promotions.store');
         Route::put('/{id}', [PromotionController::class, 'update'])->name('admin.promotions.update');
         Route::delete('/{id}', [PromotionController::class, 'delete'])->name('admin.promotions.delete');
+        Route::put('/active/{id}', [PromotionController::class, 'activePromotion'])->name('admin.promotions.activate');
     });
 
     //Aply Promotions
@@ -177,7 +178,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
         Route::post('/store', [AplyPromController::class, 'aplyPromotion'])->name('admin.aplyProms.store');
         Route::put('/update', [AplyPromController::class, 'update'])->name('admin.aplyProms.update');
         Route::delete('/delete', [AplyPromController::class, 'delete'])->name('admin.aplyProms.delete');
-
     });
     
 

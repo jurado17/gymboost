@@ -183,12 +183,7 @@ const deletePromotions = async () => {
         }
     });
 };
-
-
-
-
 </script>
-
 
 <template>
     <AdminLayout>

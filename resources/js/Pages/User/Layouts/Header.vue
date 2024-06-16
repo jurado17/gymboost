@@ -288,7 +288,7 @@ onMounted(() => {
 
         <!-- Menú lateral deslizante -->
         <div v-if="sidebarOpen"
-            class="fixed inset-y-0 left-0 w-64  bg-white border-r lg:hidden border-gray-200 dark:bg-gray-900 transform ease-in-out transition-all duration-300 z-50 shadow-lg">
+            class="fixed inset-y-0 left-0 w-96  bg-white border-r lg:hidden border-gray-200 dark:bg-gray-900 transform ease-in-out transition-all duration-300 z-50 shadow-lg">
             <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800">
                 <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200">GymBoost</h2>
                 <button @click="closeSidebar"

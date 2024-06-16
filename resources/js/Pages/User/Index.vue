@@ -2,7 +2,6 @@
 import { Link } from '@inertiajs/inertia-vue3';
 import UserLayout from './Layouts/UserLayout.vue';
 import { router } from '@inertiajs/vue3';
-import Hero from './Layouts/Hero.vue';
 import PrimaryBanner from './Components/PrimaryBanner.vue'
 import CategoryCard from './Components/CategoryCard.vue'
 
@@ -23,6 +22,7 @@ const props = defineProps({
     weights: Array,
     flavours: Array,
     stockProducts: Array,
+    promotions:Object,
 })
 
 const open = ref(false)
@@ -47,7 +47,6 @@ const originalPrice = () => {
     if (selectedWeight.value) {
         return (Number(selectedProduct.value.price) * (selectedWeight.value.weight_g / 1000)).toFixed(2);
     }
-
 }
 const calculatedPrice = () => {
 
@@ -103,8 +102,8 @@ const addToCart = (product, weight, flavour, quantity, price) => {
                     showConfirmation: false,
                     title: page.props.flash.success,
                 })
+                open.value = false
             }
-            open.value = false
         }
     });
     open.value = false
@@ -113,20 +112,16 @@ const addToCart = (product, weight, flavour, quantity, price) => {
 
 <template>
     <UserLayout>
-
-
-        <PrimaryBanner></PrimaryBanner>
+        <PrimaryBanner :promotions="promotions"></PrimaryBanner>
 
         <CategoryCard></CategoryCard>
 
-
-        <div class="bg-white">
+        <div class="bg-white my-24">
             <section class="bg-white dark:bg-gray-900">
                 <div class=" px-1 mx-auto max-w-screen-xl">
                     <div class="mx-auto max-w-screen-md text-center mb-8 lg:mb-12">
-                        <p class="my-24 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
+                        <p class=" text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
                             Productos Recomendados</p>
-
                     </div>
 
                     <div class="lg:grid  lg:grid-cols-4 sm:gap-6 xl:gap-10 lg:space-y-0">
@@ -305,10 +300,5 @@ const addToCart = (product, weight, flavour, quantity, price) => {
         <div class="flex justify-center text-center p-2 bg-cyan-950 text-white text-sm">
             <h1 class="hover:underline">¡SEMANA BOOST! <br> 50% de Descuento en nuestra selección de productos</h1>
         </div>
-
-        <!--START HERO SECTION-->
-        <Hero></Hero>
-        <!--END HERO SECTION-->
-
     </UserLayout>
 </template>

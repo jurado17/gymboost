@@ -10,16 +10,23 @@
         <div class="absolute inset-0 bg-black opacity-50"></div>
 
         <!-- Texto superpuesto -->
-        <div class="absolute inset-0 flex items-center justify-center text-center">
+        <div v-if="props.promotions" class="absolute inset-0 flex items-center justify-center text-center">
           <div class="block space-y-12">
 
             <h1 class="text-white text-2xl font-bold">Comienza a cuidar hoy tu bienestar</h1>
-            <h1 class="text-white text-5xl font-bold">{{ Number(promotion.porcentual_discount) * 100 }}% de Descuento</h1>
+            <h1 class="text-white text-5xl font-bold hover:underline">{{ Number(props.promotions.porcentual_discount) * 100 }}% de Descuento</h1>
           
-          <h1 class="text-white text-xl font-bold">Usa el codigo {{ promotion.discount_code }} en el carrito para obtener este descuento</h1>
+          <h1 class="text-white text-xl font-bold">Usa el codigo {{ props.promotions.discount_code }} en el carrito para obtener este descuento</h1>
           </div>
-          
-          <h1></h1>
+        
+        </div>
+        <div v-else class="absolute inset-0 flex items-center justify-center text-center">
+          <div class="block space-y-12">
+
+            <h1 class="text-white text-2xl font-bold">Comienza a cuidar hoy tu bienestar</h1>
+            <h1 class="text-white hover:underline hover:cursor-pointer text-4xl font-bold">Echa un vistazo a nuestra seleccion de productos</h1>
+          </div>
+        
         </div>
       </div>
     </div>
@@ -27,11 +34,8 @@
 </template>
 
 <script setup>
-
-import { usePage } from '@inertiajs/vue3';
-const promotion = usePage().props.promotions
+const props = defineProps({
+  promotions:Object,
+})
 </script>
 
-<style scoped>
-/* Ajustes adicionales si es necesario */
-</style>

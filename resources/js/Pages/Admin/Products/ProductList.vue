@@ -213,7 +213,7 @@ const publishProduct = (product, index) => {
             try {
                 router.put('products/publish/' + product.id, {
                     onSuccess: (page) => {
-                        deleteProduct(product, index);
+                        publishProduct(product, index);
                         Swal.fire({
                             toast: true,
                             icon: 'success',
@@ -407,7 +407,7 @@ const resetFilters = () => {
                                     <img v-if="product.product_images.length > 0"
                                         :src="`/storage/${product.product_images[0].image}`" :alt="product.imageAlt"
                                         class="h-12 w-12 object-cover object-center" />
-
+                                        
                                     <img v-else
                                         src="https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg"
                                         :alt="product.imageAlt" class="h-12 w-12 object-cover object-center" />

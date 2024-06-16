@@ -47,7 +47,7 @@ class CartController extends Controller
                     'final_price' => $product->price // Assuming final_price is the product price for guests
                 ];
             });
-            dd($cartItems);
+            
             return Inertia::render('User/CartList', ['cartItems' => $cartItems]);
         }
     }

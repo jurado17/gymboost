@@ -25,8 +25,7 @@ class UserController extends Controller
         $weights = Weight::get();
         $flavours = Flavour::get();
         $stockProducts = StockProduct::get();
-
-        $promotions = Promotion::where('type','carrito')->first();
+        $promotions = Promotion::where('type','carrito')->where('isActive',1)->first();
 
         return Inertia::render('User/Index', [
             'products' => $products,
