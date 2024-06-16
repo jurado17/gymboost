@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('weight_id')->references('id')->on('weights');
             $table->foreignId('flavour_id')->references('id')->on('flavours');
             $table->integer('quantity');
-            $table->boolean('isSotcked')->default(false);
+            $table->boolean('isStocked')->default(false);
             $table->timestamps();
             
             

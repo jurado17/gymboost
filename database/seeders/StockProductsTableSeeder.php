@@ -18,7 +18,7 @@ class StockProductsTableSeeder extends Seeder
                 'weight_id' => $faker->numberBetween(1, 5),
                 'flavour_id' => $faker->numberBetween(1, 10),
                 'quantity' => $faker->numberBetween(1, 100),
-                'isSotcked' => $faker->boolean,
+                'isStocked' => $faker->boolean,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
