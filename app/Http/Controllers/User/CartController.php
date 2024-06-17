@@ -83,90 +83,95 @@ class CartController extends Controller
     }
 
     
-public function store(Request $request, Product $product, $weight, $flavour, $quantity, $price)
-{
-    $user = $request->user();
-    $reservedUntil = now()->addMinutes(20);
-
-    DB::beginTransaction();
-
-    try {
-        $stockProduct = StockProduct::where([
-            'product_id' => $product->id,
-            'weight_id' => $weight,
-            'flavour_id' => $flavour,
-        ])->lockForUpdate()->first();
-
-        if (!$stockProduct || $stockProduct->quantity < $quantity) {
-            DB::rollBack();
-            return redirect()->back()->withErrors(['error' => 'No hay suficiente stock disponible.']);
-        }
-
-        $stockProduct->decrement('quantity', $quantity);
-        if ($stockProduct->quantity < 20) {
-            $stockProduct->isStocked = false;
-        }
-        $stockProduct->save();
-
-        if ($user) {
-            $cartItem = CartItem::where([
-                'user_id' => $user->id,
+    public function store(Request $request, Product $product, $weight, $flavour, $quantity, $price)
+    {
+        $user = $request->user();
+        $reservedUntil = now()->addMinutes(20);
+    
+        DB::beginTransaction();
+    
+        try {
+            $stockProduct = StockProduct::where([
                 'product_id' => $product->id,
                 'weight_id' => $weight,
                 'flavour_id' => $flavour,
-            ])->first();
-
-            if ($cartItem) {
-                $cartItem->increment('quantity', $quantity);
-                $cartItem->update([
-                    'reserved_until' => $reservedUntil, 
-                    'final_price' => $price * $cartItem->quantity
-                ]);
-            } else {
-                CartItem::create([
+            ])->lockForUpdate()->first();
+    
+            if (!$stockProduct || $stockProduct->quantity < $quantity) {
+                DB::rollBack();
+                return redirect()->back()->withErrors(['error' => 'No hay suficiente stock disponible.']);
+            }
+    
+            $stockProduct->decrement('quantity', $quantity);
+            if ($stockProduct->quantity < 20) {
+                $stockProduct->isStocked = false;
+            }
+            $stockProduct->save();
+    
+            if ($user) {
+                $cartItem = CartItem::where([
                     'user_id' => $user->id,
                     'product_id' => $product->id,
                     'weight_id' => $weight,
                     'flavour_id' => $flavour,
-                    'quantity' => $quantity,
-                    'final_price' => $price,
-                    'reserved_until' => $reservedUntil,
-                ]);
-            }
-        } else {
-            $cartItems = Cart::getCookieCartItems();
-            $isProductExists = false;
-            foreach ($cartItems as &$item) {
-                if ($item['product_id'] === $product->id && $item['weight_id'] == $weight && $item['flavour_id'] == $flavour) {
-                    $item['quantity'] += $quantity;
-                    $item['reserved_until'] = $reservedUntil->timestamp;
-                    $item['final_price'] = $price * $item['quantity'];
-                    $isProductExists = true;
-                    break;
+                ])->first();
+    
+                if ($cartItem) {
+                    $cartItem->increment('quantity', $quantity);
+                    $cartItem->update([
+                        'final_price' => $price * $cartItem->quantity
+                    ]);
+                } else {
+                    CartItem::create([
+                        'user_id' => $user->id,
+                        'product_id' => $product->id,
+                        'weight_id' => $weight,
+                        'flavour_id' => $flavour,
+                        'quantity' => $quantity,
+                        'final_price' => $price,
+                    ]);
                 }
+    
+                // Update reserved_until for all items in the user's cart
+                CartItem::where('user_id', $user->id)->update(['reserved_until' => $reservedUntil]);
+            } else {
+                $cartItems = Cart::getCookieCartItems();
+                $isProductExists = false;
+                foreach ($cartItems as &$item) {
+                    if ($item['product_id'] === $product->id && $item['weight_id'] == $weight && $item['flavour_id'] == $flavour) {
+                        $item['quantity'] += $quantity;
+                        $item['final_price'] = $price * $item['quantity'];
+                        $isProductExists = true;
+                        break;
+                    }
+                }
+    
+                if (!$isProductExists) {
+                    $cartItems[] = [
+                        'user_id' => null,
+                        'product_id' => $product->id,
+                        'weight_id' => $weight,
+                        'flavour_id' => $flavour,
+                        'quantity' => $quantity,
+                        'final_price' => $price,
+                    ];
+                }
+    
+                // Update reserved_until for all items in the cookie cart
+                foreach ($cartItems as &$item) {
+                    $item['reserved_until'] = $reservedUntil->timestamp;
+                }
+                Cart::setCookieCartItems($cartItems);
             }
-
-            if (!$isProductExists) {
-                $cartItems[] = [
-                    'user_id' => null,
-                    'product_id' => $product->id,
-                    'weight_id' => $weight,
-                    'flavour_id' => $flavour,
-                    'quantity' => $quantity,
-                    'final_price' => $price,
-                    'reserved_until' => $reservedUntil->timestamp,
-                ];
-            }
-            Cart::setCookieCartItems($cartItems);
+    
+            DB::commit();
+            return redirect()->back()->with('success', 'Producto añadido al carrito correctamente.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withErrors(['error' => 'Ocurrió un error al añadir el producto al carrito.']);
         }
-
-        DB::commit();
-        return redirect()->back()->with('success', 'Producto añadido al carrito correctamente.');
-    } catch (\Exception $e) {
-        DB::rollBack();
-        return redirect()->back()->withErrors(['error' => 'Ocurrió un error al añadir el producto al carrito.']);
     }
-}
+     
 
 public function update(Request $request, Product $product, Weight $weight, Flavour $flavour)
 {

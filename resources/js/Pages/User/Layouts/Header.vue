@@ -1,6 +1,6 @@
 <script setup>
 import { Link, usePage } from "@inertiajs/vue3";
-import { computed, ref, onMounted } from 'vue';
+import { computed, ref, onMounted, watch } from 'vue';
 import axios from 'axios';
 
 const canLogin = usePage().props.canLogin;
@@ -13,6 +13,8 @@ const categories = ref([]);
 const brands = ref([]);
 const searchQuery = ref('');
 const searchResults = ref([]);
+const countdown = ref(null);
+const countdownInterval = ref(null);
 
 const toggleSidebar = () => {
     sidebarOpen.value = !sidebarOpen.value;
@@ -44,6 +46,22 @@ const searchProducts = () => {
     }
 };
 
+const startCountdown = () => {
+    if (countdownInterval.value) {
+        clearInterval(countdownInterval.value);
+    }
+    countdown.value = parseInt(localStorage.getItem('countdown')) || 20 * 60; // 20 minutes in seconds
+    countdownInterval.value = setInterval(() => {
+        if (countdown.value > 0) {
+            countdown.value--;
+            localStorage.setItem('countdown', countdown.value);
+        } else {
+            clearInterval(countdownInterval.value);
+            localStorage.removeItem('countdown');
+        }
+    }, 1000);
+};
+
 onMounted(() => {
     // Fetch categories
     axios.get('/api/categories')
@@ -62,6 +80,17 @@ onMounted(() => {
         .catch(error => {
             console.error("Error fetching brands:", error);
         });
+
+    // Initialize countdown if there is a value in localStorage
+    if (localStorage.getItem('countdown')) {
+        startCountdown();
+    }
+});
+
+watch(() => cart.value.data.count, (newCount, oldCount) => {
+    if (newCount > oldCount) {
+        startCountdown();
+    }
 });
 </script>
 
@@ -209,22 +238,24 @@ onMounted(() => {
                     </div>
 
                     <div class="inline-block ">
-                        <Link :href="route('cart.view')" type="button"
-                            class="relative inline-flex items-center p-3 text-sm font-medium text-center text-black focus:ring-4 focus:outline-none focus:ring-blue-300">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-                        </svg>
+        <Link :href="route('cart.view')" type="button"
+            class="relative inline-flex items-center p-3 text-sm font-medium text-center text-black focus:ring-4 focus:outline-none focus:ring-blue-300">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+            </svg>
 
+            <div class="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-0 -end-0 dark:border-gray-900"
+                :hidden="cart.data.count === 0">
+                {{ cart.data.count }}
+            </div>
+        </Link>
 
-                        <div class="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-0 -end-0 dark:border-gray-900"
-                            :hidden="cart.data.count === 0">
-                            {{ cart.data.count }}
-                        </div>
-                        </Link>
-
-                    </div>
+        <div v-if="countdown !== null" class="mt-2 text-sm text-gray-500">
+            Time left: {{ Math.floor(countdown / 60) }}:{{ (countdown % 60).toString().padStart(2, '0') }}
+        </div>
+    </div>
                     <!--Boton carrito-->
 
                     <!-- Botón del menú en dispositivos pequeños -->
