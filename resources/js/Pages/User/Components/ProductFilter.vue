@@ -15,13 +15,13 @@ import {
     TransitionRoot,
 } from '@headlessui/vue'
 import { XMarkIcon } from '@heroicons/vue/24/outline'
-import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon } from '@heroicons/vue/20/solid'
+import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon } from '@heroicons/vue/20/solid'
 import { router, useForm } from '@inertiajs/vue3'
 
 const sortOptions = [
-    { name: 'Nuevo', value: 'newest', current: false },
-    { name: 'Precio: Mas Bajo Primero', value: 'price_desc', current: false },
-    { name: 'Precio: Mas Alto Primero', value: 'price_asc', current: false },
+    { name: 'Nuevo', href: '#', current: false },
+    { name: 'Precio: Mas Bajo Primero', href: '#', current: false },
+    { name: 'Precio: Mas Alto Primero', href: '#', current: false },
 ]
 
 const props = defineProps({
@@ -30,7 +30,6 @@ const props = defineProps({
 });
 
 const mobileFiltersOpen = ref(false)
-const selectedSortOption = ref(sortOptions[0].value);
 
 const priceFilter = useForm({
     prices: [0, 1000]
@@ -79,13 +78,12 @@ function updateFilterProducts(event) {
     }
     router.get('products', {
         brands: selectedBrands.value,
-        categories: selectedCategories.value,
-        sort: selectedSortOption.value
+        categories: selectedCategories.value
     }, {
         preserveState: true,
         preserveScroll: true, // To preserve the scroll position
         replace: true
-    });
+    })
 }
 
 
@@ -95,11 +93,9 @@ function clearFilters() {
     priceFilter.prices = [0, 1000];
     updateFilterProducts();
 }
-function changeSortOption(option) {
-    selectedSortOption.value = option.value;
-    updateFilterProducts();
-}
 </script>
+
+
 
 <template>
     <div class="bg-white pt-20">
@@ -137,13 +133,10 @@ function changeSortOption(option) {
                                     <ul role="list" class="px-2 py-3 font-medium text-gray-900">
                                         <li v-for="category in categories" :key="category.id">
                                             <div class="flex items-center">
-                                                <input :id="`filter-mobile-category-${category.id}`"
-                                                    :value="category.id" type="checkbox" v-model="selectedCategories"
-                                                    @change="updateFilterProducts"
-                                                    class="h-4 w-4 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500" />
+                                                <input :id="`filter-mobile-category-${category.id}`" :value="category.id" type="checkbox" v-model="selectedCategories" @change="updateFilterProducts"
+                                                    class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
                                                 <label :for="`filter-mobile-category-${category.id}`"
-                                                    class="ml-3 min-w-0 flex-1 text-gray-500">{{ category.name
-                                                    }}</label>
+                                                    class="ml-3 min-w-0 flex-1 text-gray-500">{{ category.name }}</label>
                                             </div>
                                         </li>
                                     </ul>
@@ -162,12 +155,9 @@ function changeSortOption(option) {
                                         <DisclosurePanel class="pt-6">
                                             <div class="space-y-6">
                                                 <div v-for="brand in brands" :key="brand.id" class="flex items-center">
-                                                    <input :id="`filter-mobile-brand-${brand.id}`" :value="brand.id"
-                                                        type="checkbox" v-model="selectedBrands"
-                                                        class="h-4 w-4 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500"
-                                                        @change="updateFilterProducts" />
-                                                    <label :for="`filter-mobile-brand-${brand.id}`"
-                                                        class="ml-3 min-w-0 flex-1 text-gray-500">{{
+                                                    <input :id="`filter-mobile-brand-${brand.id}`" :value="brand.id" type="checkbox" v-model="selectedBrands"
+                                                        class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" @change="updateFilterProducts" />
+                                                    <label :for="`filter-mobile-brand-${brand.id}`" class="ml-3 min-w-0 flex-1 text-gray-500">{{
                                                             brand.name }}</label>
                                                 </div>
                                             </div>
@@ -193,8 +183,8 @@ function changeSortOption(option) {
                                                             class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
                                                             MIN
                                                         </label>
-                                                        <input type="number" v-model="priceFilter.prices[0]"
-                                                            id="filter-mobile-price-from" placeholder="Min Price"
+                                                        <input type="number" v-model="priceFilter.prices[0]" id="filter-mobile-price-from"
+                                                            placeholder="Min Price"
                                                             class="block w-full rounded-lg border border-gray-300 bg-gray-90 p-2.5 text-sm text-gray-900">
                                                     </div>
                                                     <div class="basis-1/3">
@@ -202,19 +192,14 @@ function changeSortOption(option) {
                                                             class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
                                                             MAX
                                                         </label>
-                                                        <input type="number" id="filter-mobile-price-to"
-                                                            v-model="priceFilter.prices[1]" placeholder="Max Price"
+                                                        <input type="number" id="filter-mobile-price-to" v-model="priceFilter.prices[1]"
+                                                            placeholder="Max Price"
                                                             class="block w-full rounded-lg border border-gray-300 bg-gray-90 p-2.5 text-sm text-gray-900">
                                                     </div>
-                                                    <SecondaryButton @click="filterPrices" class="self-end">OK
-                                                    </SecondaryButton>
+                                                    <SecondaryButton @click="filterPrices" class="self-end">OK</SecondaryButton>
                                                 </div>
                                             </div>
                                         </DisclosurePanel>
-                                        <button type="button" @click="clearFilters"
-                                            class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500">
-                                            Clear Filters
-                                        </button>
                                     </Disclosure>
                                 </form>
                             </DialogPanel>
@@ -241,22 +226,23 @@ function changeSortOption(option) {
                                 </MenuButton>
                             </div>
 
-                            <TransitionChild as="template" enter="transition ease-out duration-100"
-                                enter-from="opacity-0 scale-95" enter-to="opacity-100 scale-100"
-                                leave="transition ease-in duration-75" leave-from="opacity-100 scale-100"
-                                leave-to="opacity-0 scale-95">
+                            <transition enter-active-class="transition ease-out duration-100"
+                                enter-from-class="transform opacity-0 scale-95"
+                                enter-to-class="transform opacity-100 scale-100"
+                                leave-active-class="transition ease-in duration-75"
+                                leave-from-class="transform opacity-100 scale-100"
+                                leave-to-class="transform opacity-0 scale-95">
                                 <MenuItems
                                     class="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
                                     <div class="py-1">
-                                        <MenuItem v-for="option in sortOptions" :key="option.value">
-                                        <a href="#" @click.prevent="changeSortOption(option)"
-                                            class="block px-4 py-2 text-sm text-gray-700">
-                                            {{ option.name }}
-                                        </a>
+                                        <MenuItem v-for="option in sortOptions" :key="option.name" v-slot="{ active }">
+                                        <a :href="option.href"
+                                            :class="[option.current ? 'font-medium text-gray-900' : 'text-gray-500', active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm']">{{
+                                                option.name }}</a>
                                         </MenuItem>
                                     </div>
                                 </MenuItems>
-                            </TransitionChild>
+                            </transition>
                         </Menu>
 
 
@@ -298,7 +284,8 @@ function changeSortOption(option) {
                                 <SecondaryButton @click="filterPrices()" class="self-end">OK</SecondaryButton>
                             </div>
 
-                            <Disclosure as="div" class="border-y border-gray-200 py-6" v-slot="{ open }">
+                            <Disclosure as="div" 
+                                class="border-y border-gray-200 py-6" v-slot="{ open }">
                                 <h3 class="-my-3 flow-root">
                                     <DisclosureButton
                                         class="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
@@ -312,9 +299,8 @@ function changeSortOption(option) {
                                 <DisclosurePanel class="pt-6">
                                     <div class="space-y-4">
                                         <div v-for="brand in brands" :key="brand.id" class="flex items-center">
-                                            <input :id="`filter-${brand.id}`" :value="brand.id" type="checkbox"
-                                                v-model="selectedBrands" @change="updateFilterProducts"
-                                                class="h-4 w-4 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500" />
+                                            <input :id="`filter-${brand.id}`" :value="brand.id" type="checkbox" v-model="selectedBrands" @change="updateFilterProducts"
+                                                class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
                                             <label :for="`filter-${brand.id}`" class="ml-3 text-sm text-gray-600">{{
                                                 brand.name }}</label>
                                         </div>
@@ -322,7 +308,8 @@ function changeSortOption(option) {
                                 </DisclosurePanel>
                             </Disclosure>
 
-                            <Disclosure as="div" class="border-y border-gray-200 py-6" v-slot="{ open }">
+                            <Disclosure as="div" 
+                                class="border-y border-gray-200 py-6" v-slot="{ open }">
                                 <h3 class="-my-3 flow-root">
                                     <DisclosureButton
                                         class="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
@@ -335,31 +322,18 @@ function changeSortOption(option) {
                                 </h3>
                                 <DisclosurePanel class="pt-6">
                                     <div class="space-y-4">
-                                        <div v-for="category in categories" :key="category.id"
-                                            class="flex items-center">
-                                            <input :id="`filter-${category.id}`" :value="category.id" type="checkbox"
-                                                v-model="selectedCategories" @change="updateFilterProducts"
-                                                class="h-4 w-4 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500" />
+                                        <div v-for="category in categories" :key="category.id" class="flex items-center">  
+                                            <input :id="`filter-${category.id}`" :value="category.id" type="checkbox" v-model="selectedCategories" @change="updateFilterProducts"
+                                                class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
                                             <label :for="`filter-${category.id}`" class="ml-3 text-sm text-gray-600">{{
                                                 category.name }}</label>
                                         </div>
                                     </div>
                                 </DisclosurePanel>
                             </Disclosure>
-                            <Disclosure class="pt-6">
-                                <div class="space-y-4">
-                                    <div class="flex items-center">
-                                        <input type="checkbox"
-                                            class="h-4 w-4 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500" />
-                                        <label class="ml-3 text-sm text-gray-600">
-                                            Ofertas
-                                        </label>
-                                    </div>
-                                </div>
-                            </Disclosure>
+                            
 
-                            <button type="button" @click="clearFilters"
-                                class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500">
+                                <button type="button" @click="clearFilters" class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                 Clear Filters
                             </button>
                         </form>
